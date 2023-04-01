@@ -52,17 +52,17 @@ const tab = createMaterialTopTabNavigator()
 
 interface NavigationTopContainerProps {
   children: React.ReactNode
-  BottomTabIndicatorIndexAdd: number
-  setTopIndex: any
-  setBottomTabIndicatorIndex: any
+  // BottomTabIndicatorIndexAdd: number
+  // setTopIndex: any
+  // setBottomTabIndicatorIndex: any
 }
 
 export const NavigationTopContainer = (props: NavigationTopContainerProps) => {
   const {
-    children,
-    setTopIndex,
-    setBottomTabIndicatorIndex,
-    BottomTabIndicatorIndexAdd
+    children
+    // setTopIndex,
+    // setBottomTabIndicatorIndex,
+    // BottomTabIndicatorIndexAdd
   } = props
 
   const theme = useTheme()
@@ -117,10 +117,10 @@ export const NavigationTopContainer = (props: NavigationTopContainerProps) => {
         tabBarIndicator: navigationProps => {
           const index = navigationProps.state.index
           const number = navigationProps.state.routes.length
-          const indicatorIndex = index + BottomTabIndicatorIndexAdd
-          if (setTopIndex) setTopIndex(index)
-          if (setBottomTabIndicatorIndex)
-            setBottomTabIndicatorIndex(indicatorIndex)
+          // const indicatorIndex = index + BottomTabIndicatorIndexAdd
+          // if (setTopIndex) setTopIndex(index)
+          // if (setBottomTabIndicatorIndex)
+          //   setBottomTabIndicatorIndex(indicatorIndex)
           return (
             <NavigationTopIndicator
               index={index}

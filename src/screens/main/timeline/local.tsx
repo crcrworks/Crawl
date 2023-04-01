@@ -7,7 +7,7 @@ import ThemeToggle from '../../../components/theme-toggle'
 const LocalScreen = () => {
   return (
     <Center
-      _dark={{ bg: 'primary.300' }}
+      _dark={{ bg: 'dark.300' }}
       _light={{ bg: 'blueGray.50' }}
       px={4}
       flex={1}

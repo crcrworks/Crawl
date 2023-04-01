@@ -5,7 +5,7 @@ const MentionsScreen = () => {
   return (
     <Center
       safeArea
-      _dark={{ bg: 'primary.300' }}
+      _dark={{ bg: 'dark.300' }}
       _light={{ bg: 'blueGray.50' }}
       flex={1}
     >

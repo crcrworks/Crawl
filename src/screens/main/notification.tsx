@@ -9,13 +9,8 @@ import { NavigationTopContainer } from '../../components/navigation/top-bar'
 const tab = createMaterialTopTabNavigator()
 
 const NotificationScreen = ({ route }: any) => {
-  const { setTopIndex, setBottomTabIndicatorIndex } = route.params
   return (
-    <NavigationTopContainer
-      BottomTabIndicatorIndexAdd={0}
-      setTopIndex={setTopIndex}
-      setBottomTabIndicatorIndex={setBottomTabIndicatorIndex}
-    >
+    <NavigationTopContainer>
       <tab.Screen name="All" component={AllScreen} />
       <tab.Screen name="mentions" component={MentionsScreen} />
     </NavigationTopContainer>

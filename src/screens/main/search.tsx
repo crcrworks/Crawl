@@ -7,14 +7,8 @@ import InnerSearchScreen from './search/search'
 const tab = createMaterialTopTabNavigator()
 
 const SearchScreen = ({ route }: any) => {
-  const { setTopIndex, setBottomTabIndicatorIndex } = route.params
-
   return (
-    <NavigationTopContainer
-      BottomTabIndicatorIndexAdd={4}
-      setTopIndex={setTopIndex}
-      setBottomTabIndicatorIndex={setBottomTabIndicatorIndex}
-    >
+    <NavigationTopContainer>
       <tab.Screen name="InsideSearch" component={InnerSearchScreen} />
     </NavigationTopContainer>
   )

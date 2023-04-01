@@ -9,14 +9,8 @@ import { NavigationTopContainer } from '../../components/navigation/top-bar'
 const tab = createMaterialTopTabNavigator()
 
 const TimelineScreen = ({ route }: any) => {
-  const { setTopIndex, setBottomTabIndicatorIndex } = route.params
-
   return (
-    <NavigationTopContainer
-      BottomTabIndicatorIndexAdd={2}
-      setTopIndex={setTopIndex}
-      setBottomTabIndicatorIndex={setBottomTabIndicatorIndex}
-    >
+    <NavigationTopContainer>
       <tab.Screen name="Local" component={LocalScreen} />
       <tab.Screen name="Global" component={GlobalScreen} />
     </NavigationTopContainer>

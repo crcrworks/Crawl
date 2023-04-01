@@ -6,7 +6,12 @@ const config = {
 }
 
 const colors = {
-  primary: {
+  light: {
+    100: '#F8F8F8',
+    200: '#EEEEEE',
+    300: '#F5F5F5'
+  },
+  dark: {
     100: '#2D2E31',
     200: '#282828',
     300: '#191919'
