@@ -5,48 +5,20 @@ import {
   MaterialTopTabBar,
   MaterialTopTabBarProps
 } from '@react-navigation/material-top-tabs'
-import { Box, themeTools, useColorMode, useTheme, View } from 'native-base'
+import {
+  Box,
+  themeTools,
+  useColorMode,
+  useTheme,
+  View,
+  useColorModeValue
+} from 'native-base'
 import { useSharedValue } from 'react-native-reanimated'
 
-import SidebarIcon from '../sidebar-icon'
+import SidebarIcon from 'crawl/src/components/sidebar-icon'
 import { border } from 'native-base/lib/typescript/theme/styled-system'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { LinearGradient } from 'expo-linear-gradient'
-
-interface NavigationTopIndicatorProps {
-  index: number
-  navigationProps: any
-}
-
-const NavigationTopIndicator = (props: NavigationTopIndicatorProps) => {
-  const { index, navigationProps } = props
-
-  const { colorMode } = useColorMode()
-
-  return (
-    <TabBar
-      {...navigationProps}
-      navigationState={{
-        index,
-        routes: navigationProps.state.routes
-      }}
-      style={{
-        backgroundColor: 'transparent'
-      }}
-      indicatorStyle={{
-        left: `${100 / navigationProps.state.routes.length / 4}%`,
-        bottom: colorMode === 'dark' ? 0 : 1,
-        width: `${100 / navigationProps.state.routes.length / 2}%`,
-        height: 2,
-        backgroundColor: '#F8F8F8',
-        borderTopLeftRadius: 10,
-        borderTopRightRadius: 10,
-        borderBottomRightRadius: 0,
-        borderBottomLeftRadius: 0
-      }}
-    />
-  )
-}
 
 const tab = createMaterialTopTabNavigator()
 
@@ -57,7 +29,7 @@ interface NavigationTopContainerProps {
   // setBottomTabIndicatorIndex: any
 }
 
-export const NavigationTopContainer = (props: NavigationTopContainerProps) => {
+export function NavigationTopContainer(props: NavigationTopContainerProps) {
   const {
     children
     // setTopIndex,
@@ -66,42 +38,26 @@ export const NavigationTopContainer = (props: NavigationTopContainerProps) => {
   } = props
 
   const theme = useTheme()
-  const [color1, color2] = [
-    themeTools.getColor(theme, 'accent.100'),
-    themeTools.getColor(theme, 'accent.200')
-  ]
+  const color = {
+    accent: themeTools.getColor(theme, 'accent.100'),
+    active: themeTools.getColor(
+      theme,
+      useColorModeValue('black.100', 'white.100')
+    ),
+    inactive: themeTools.getColor(
+      theme,
+      useColorModeValue('black.1', 'white.1')
+    ),
+    border: themeTools.getColor(theme, useColorModeValue('black.0', 'white.0')),
+    indicator: themeTools.getColor(
+      theme,
+      useColorModeValue('black.300', 'white.300')
+    )
+  }
 
   return (
     <tab.Navigator
-      initialRouteName="Timeline"
       tabBarPosition="top"
-      tabBar={tabBarProps => {
-        return (
-          <View position="absolute" width={'100%'} zIndex={100}>
-            <SafeAreaView style={{ flex: 1 }}>
-              <View flexDirection={'row'} style={{ top: 10 }}>
-                <View width={20}>
-                  <SidebarIcon />
-                </View>
-                <LinearGradient
-                  colors={[color1, color2]}
-                  start={{ x: 0.0, y: 1 }}
-                  end={{ x: 1, y: 1 }}
-                  style={{
-                    flex: 1,
-                    borderTopLeftRadius: 20,
-                    borderTopRightRadius: 0,
-                    borderBottomRightRadius: 0,
-                    borderBottomLeftRadius: 20
-                  }}
-                >
-                  <MaterialTopTabBar {...tabBarProps} />
-                </LinearGradient>
-              </View>
-            </SafeAreaView>
-          </View>
-        )
-      }}
       screenOptions={{
         tabBarStyle: {
           flex: 1,
@@ -109,25 +65,66 @@ export const NavigationTopContainer = (props: NavigationTopContainerProps) => {
           backgroundColor: 'transparent'
         },
         tabBarLabelStyle: {
-          color: 'white',
-          fontSize: 15,
-          top: -5
+          color: color.active,
+          fontSize: 17,
+          bottom: 8,
+          textTransform: 'none'
         },
+        tabBarBounces: true,
 
         tabBarIndicator: navigationProps => {
           const index = navigationProps.state.index
           const number = navigationProps.state.routes.length
-          // const indicatorIndex = index + BottomTabIndicatorIndexAdd
-          // if (setTopIndex) setTopIndex(index)
-          // if (setBottomTabIndicatorIndex)
-          //   setBottomTabIndicatorIndex(indicatorIndex)
+
           return (
-            <NavigationTopIndicator
-              index={index}
-              navigationProps={navigationProps}
+            <TabBar
+              {...navigationProps}
+              navigationState={{
+                index,
+                routes: navigationProps.state.routes
+              }}
+              style={{
+                backgroundColor: 'transparent'
+              }}
+              indicatorStyle={{
+                left: `${100 / navigationProps.state.routes.length / 4}%`,
+                bottom: -1,
+                width: `${100 / navigationProps.state.routes.length / 2}%`,
+                height: 1,
+                backgroundColor: color.indicator,
+                borderTopLeftRadius: 10,
+                borderTopRightRadius: 10,
+                borderBottomRightRadius: 0,
+                borderBottomLeftRadius: 0
+              }}
             />
           )
         }
+      }}
+      tabBar={tabBarProps => {
+        return (
+          <View position="absolute" w={'100%'} zIndex={100}>
+            <SafeAreaView style={{ flex: 1 }}>
+              <View flexDirection={'row'} style={{ top: 10, height: 35 }}>
+                <View w={20}>
+                  <SidebarIcon />
+                </View>
+                <View
+                  flex={1}
+                  borderColor={color.border}
+                  borderTopWidth={1}
+                  borderRightWidth={0}
+                  borderBottomWidth={1}
+                  borderLeftWidth={1}
+                  borderLeftRadius={100}
+                  borderRightRadius={0}
+                >
+                  <MaterialTopTabBar {...tabBarProps} />
+                </View>
+              </View>
+            </SafeAreaView>
+          </View>
+        )
       }}
     >
       {children}
@@ -135,4 +132,4 @@ export const NavigationTopContainer = (props: NavigationTopContainerProps) => {
   )
 }
 
-export default NavigationTopIndicator
+export default NavigationTopContainer

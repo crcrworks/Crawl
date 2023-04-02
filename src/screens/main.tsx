@@ -24,11 +24,11 @@ import { Defs, RadialGradient, Svg, Stop, Rect } from 'react-native-svg'
 import { useAtom } from 'jotai'
 import { TopTabIndexAtom, BottomTabIndicatorIndexAtom } from '../atoms/atoms'
 
-import SearchScreen from './main/search'
-import TimelineScreen from './main/timeline'
-import NotificationScreen from './main/notification'
-import NavigationBottomContainer from '../components/navigation/bottom-bar'
-import SidebarIcon from '../components/sidebar-icon'
+import SearchScreen from 'crawl/src/screens/main/search'
+import TimelineScreen from 'crawl/src/screens/main/timeline'
+import NotificationScreen from 'crawl/src/screens/main/notification'
+import NavigationBottomContainer from 'crawl/src/components/navigation/bottom-bar'
+import SidebarIcon from 'crawl/src/components/sidebar-icon'
 import { BlurView } from 'expo-blur'
 
 const tab = createMaterialTopTabNavigator()
@@ -38,9 +38,12 @@ export interface TopTabState {
   number: number
 }
 
-const Main = () => {
+function Main() {
   return (
-    <View flex={1} backgroundColor={useColorModeValue('light.300', 'dark.300')}>
+    <View
+      flex={1}
+      backgroundColor={useColorModeValue('white.300', 'black.300')}
+    >
       <NavigationBottomContainer>
         <tab.Screen
           name="Notification"

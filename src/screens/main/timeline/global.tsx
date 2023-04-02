@@ -3,7 +3,7 @@ import { Center, Box, Text, useColorModeValue } from 'native-base'
 import Lottie from 'lottie-react-native'
 import { Animated, Easing } from 'react-native'
 
-const GlocalScreen = () => {
+function GlocalScreen() {
   const animationProgress = useRef(new Animated.Value(0))
   useEffect(() => {
     Animated.timing(animationProgress.current, {
@@ -17,8 +17,8 @@ const GlocalScreen = () => {
   return (
     <Center
       safeArea
-      _dark={{ bg: 'dark.300' }}
-      _light={{ bg: 'blueGray.50' }}
+      _dark={{ bg: 'black.300' }}
+      _light={{ bg: 'white.300' }}
       flex={1}
     >
       <Text color={useColorModeValue('blue.500', 'blue.300')}>Global</Text>

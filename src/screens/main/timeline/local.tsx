@@ -1,22 +1,24 @@
 import * as React from 'react'
-import { Text, Box, Center, VStack } from 'native-base'
+import { View, Text, Box, Center, VStack } from 'native-base'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
 
-import ThemeToggle from '../../../components/theme-toggle'
+import Timeline from 'crawl/src/components/timeline'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
-const LocalScreen = () => {
+function LocalScreen() {
   return (
-    <Center
-      _dark={{ bg: 'dark.300' }}
-      _light={{ bg: 'blueGray.50' }}
-      px={4}
+    <View
       flex={1}
+      _dark={{ bg: 'black.300' }}
+      _light={{ bg: 'white.300' }}
+      px={4}
     >
-      <VStack space={5} alignItems="center">
-        <Box></Box>
-        <ThemeToggle />
-      </VStack>
-    </Center>
+      <SafeAreaView>
+        <View top={70}>
+          <Timeline />
+        </View>
+      </SafeAreaView>
+    </View>
   )
 }
 

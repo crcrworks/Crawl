@@ -8,12 +8,12 @@ import {
   useTheme,
   themeTools
 } from 'native-base'
-import { FontAwesome } from '@expo/vector-icons'
+import { AntDesign } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
 import { DrawerNavigationProp } from '@react-navigation/drawer'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
-const CreateNoteIcon = () => {
+function CreateNoteIcon() {
   const navigation = useNavigation<DrawerNavigationProp<{}>>()
 
   const handlePress = useCallback(() => {
@@ -21,26 +21,20 @@ const CreateNoteIcon = () => {
   }, [navigation])
 
   const theme = useTheme()
-  const color = themeTools.getColor(theme, 'accent.200')
+  const color = themeTools.getColor(theme, 'accent.100')
 
   return (
     <TouchableOpacity style={{ flex: 1 }} onPress={handlePress}>
       <View
         flex={1}
-        width={'50px'}
-        height={'50px'}
-        marginLeft={'auto'}
-        marginRight={'auto'}
+        w={'80px'}
+        h={'30px'}
+        ml={'auto'}
+        mr={'auto'}
         backgroundColor={color}
         borderRadius={100}
       >
-        <Icon
-          as={FontAwesome}
-          name="pencil"
-          size={5}
-          color="white"
-          margin="auto"
-        />
+        <Icon as={AntDesign} name="plus" size={4} color="white.100" m="auto" />
       </View>
     </TouchableOpacity>
   )

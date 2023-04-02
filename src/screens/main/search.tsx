@@ -6,7 +6,7 @@ import InnerSearchScreen from './search/search'
 
 const tab = createMaterialTopTabNavigator()
 
-const SearchScreen = ({ route }: any) => {
+function SearchScreen({ route }: any) {
   return (
     <NavigationTopContainer>
       <tab.Screen name="InsideSearch" component={InnerSearchScreen} />

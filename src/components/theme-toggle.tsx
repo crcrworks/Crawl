@@ -1,7 +1,7 @@
 import React from 'react'
 import { Text, HStack, Switch, useColorMode } from 'native-base'
 
-const ThemeToggle = () => {
+function ThemeToggle() {
   const { colorMode, toggleColorMode } = useColorMode()
 
   return (

@@ -8,11 +8,11 @@ import { NavigationTopContainer } from '../../components/navigation/top-bar'
 
 const tab = createMaterialTopTabNavigator()
 
-const NotificationScreen = ({ route }: any) => {
+function NotificationScreen({ route }: any) {
   return (
     <NavigationTopContainer>
       <tab.Screen name="All" component={AllScreen} />
-      <tab.Screen name="mentions" component={MentionsScreen} />
+      <tab.Screen name="Mentions" component={MentionsScreen} />
     </NavigationTopContainer>
   )
 }
