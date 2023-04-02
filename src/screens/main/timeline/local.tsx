@@ -7,12 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 
 function LocalScreen() {
   return (
-    <View
-      flex={1}
-      _dark={{ bg: 'black.300' }}
-      _light={{ bg: 'white.300' }}
-      px={4}
-    >
+    <View flex={1} _dark={{ bg: 'black.300' }} _light={{ bg: 'white.300' }}>
       <SafeAreaView>
         <View top={70}>
           <Timeline />

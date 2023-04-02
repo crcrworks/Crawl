@@ -4,11 +4,11 @@ import { NativeBaseProvider } from 'native-base'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import theme from 'crawl/src/theme'
 
-interface Props {
+interface AppContainerProps {
   children: React.ReactNode
 }
 
-function AppContainer(props: Props) {
+function AppContainer(props: AppContainerProps) {
   return (
     <SafeAreaProvider>
       <NavigationContainer>

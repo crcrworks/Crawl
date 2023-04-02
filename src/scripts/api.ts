@@ -1,17 +1,17 @@
-// import axios from 'axios'
-
-// import * as Misskey from 'misskey-js'
+import axios from 'axios'
+import * as misskey from 'misskey-js'
 
 // const TOKEN = 'gZo6lLYe8jCV8Q1BDCddi4wV9RiSQYGC'
-// const stream = new Misskey.Stream('https://misskey.io/', { token: TOKEN })
+// const stream = new misskey.Stream('https://misskey.io/', { token: TOKEN })
 // const mainChannel = stream.useChannel('main')
 // const localChannel = stream.useChannel('localTimeline')
-// mainChannel.on('messagingMessage', notification => {
-//   console.log(notification)
-// })
 
 // stream.on('_connected_', () => {
 //   console.log('connected')
+// })
+
+// localChannel.on('note', note => {
+//   console.log(note)
 // })
 
 export function Connection() {}
