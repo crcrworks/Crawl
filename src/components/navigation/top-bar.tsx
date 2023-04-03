@@ -1,28 +1,17 @@
 import React from 'react'
 import { TabBar } from 'react-native-tab-view'
-import {
-  createMaterialTopTabNavigator,
-  MaterialTopTabBar,
-  MaterialTopTabBarProps
-} from '@react-navigation/material-top-tabs'
-import {
-  Box,
-  themeTools,
-  useColorMode,
-  useTheme,
-  View,
-  useColorModeValue
-} from 'native-base'
+import { createMaterialTopTabNavigator, MaterialTopTabBar, MaterialTopTabBarProps } from '@react-navigation/material-top-tabs'
+import { Box, themeTools, useColorMode, useTheme, View, useColorModeValue } from 'native-base'
 import { useSharedValue } from 'react-native-reanimated'
 
-import SidebarIcon from 'crawl/src/components/sidebar-icon'
+import SidebarIcon from '@/components/sidebar-icon'
 import { border } from 'native-base/lib/typescript/theme/styled-system'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { LinearGradient } from 'expo-linear-gradient'
 
 const tab = createMaterialTopTabNavigator()
 
-interface NavigationTopContainerProps {
+type NavigationTopContainerProps = {
   children: React.ReactNode
   // BottomTabIndicatorIndexAdd: number
   // setTopIndex: any
@@ -40,19 +29,10 @@ export function NavigationTopContainer(props: NavigationTopContainerProps) {
   const theme = useTheme()
   const color = {
     accent: themeTools.getColor(theme, 'accent.100'),
-    active: themeTools.getColor(
-      theme,
-      useColorModeValue('black.100', 'white.100')
-    ),
-    inactive: themeTools.getColor(
-      theme,
-      useColorModeValue('black.1', 'white.1')
-    ),
+    active: themeTools.getColor(theme, useColorModeValue('black.100', 'white.100')),
+    inactive: themeTools.getColor(theme, useColorModeValue('black.1', 'white.1')),
     border: themeTools.getColor(theme, useColorModeValue('black.0', 'white.0')),
-    indicator: themeTools.getColor(
-      theme,
-      useColorModeValue('black.300', 'white.300')
-    )
+    indicator: themeTools.getColor(theme, useColorModeValue('black.300', 'white.300'))
   }
 
   return (
@@ -118,6 +98,7 @@ export function NavigationTopContainer(props: NavigationTopContainerProps) {
                   borderLeftWidth={1}
                   borderLeftRadius={100}
                   borderRightRadius={0}
+                  bg="#00000083"
                 >
                   <MaterialTopTabBar {...tabBarProps} />
                 </View>

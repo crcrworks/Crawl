@@ -1,7 +1,13 @@
 import axios from 'axios'
 import * as misskey from 'misskey-js'
+import { Endpoints } from 'misskey-js/built/api.types'
 
-// const TOKEN = 'gZo6lLYe8jCV8Q1BDCddi4wV9RiSQYGC'
+const apiURL = 'https://misskey.io'
+
+function apiGet<E extends keyof Endpoints, P extends Endpoints[E]['req']>(endpoint: E, data: P = {} as any) {
+  axios.get(`${apiURL}/${endpoint}`)
+}
+
 // const stream = new misskey.Stream('https://misskey.io/', { token: TOKEN })
 // const mainChannel = stream.useChannel('main')
 // const localChannel = stream.useChannel('localTimeline')

@@ -11,6 +11,7 @@ npm-debug.*
 web-build/
 memo/
 note-sample/
+env.ts
 
 # macOS
 .DS_Store

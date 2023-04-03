@@ -1,32 +1,37 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { View, Text, Center, Image, Avatar } from 'native-base'
 import * as mfm from 'mfm-js'
 import misskey from 'misskey-js'
 import Time from './time'
 
-interface Props {
+type Props = {
   appearNote: misskey.entities.Note
 }
 
 function AppearNote(props: Props) {
   const { appearNote } = props
 
-  const noteType: 'note' | 'renote' | 'quoteRenote' = (() => {
-    if (!appearNote.text) return 'renote'
-    if (!appearNote.renoteId) return 'note'
-    return 'quoteRenote'
-  })()
+  const AppearNote = useMemo(() => {
+    const noteType: 'note' | 'renote' | 'quoteRenote' | 'unknown' = (() => {
+      if (!appearNote.createdAt) return 'unknown'
+      if (!appearNote.text) return 'renote'
+      if (!appearNote.renoteId) return 'note'
+      return 'quoteRenote'
+    })()
 
-  if (noteType === 'note') return <Note {...appearNote} />
-  if (noteType === 'quoteRenote') return <QuoteRenote {...appearNote} />
-  if (noteType === 'renote') return <Renote {...appearNote} />
+    if (noteType === 'note') return <Note {...appearNote} />
+    if (noteType === 'quoteRenote') return <QuoteRenote {...appearNote} />
+    if (noteType === 'renote') return <Renote {...appearNote} />
 
-  return <View />
+    return <View />
+  }, [appearNote])
+
+  return AppearNote
 }
 
 function Note(appearNote: misskey.entities.Note) {
   return (
-    <Header
+    <MkHeader
       createdAt={appearNote.createdAt}
       avatarUrl={appearNote.user.avatarUrl}
       user={{
@@ -34,8 +39,9 @@ function Note(appearNote: misskey.entities.Note) {
         username: appearNote.user.username
       }}
     >
-      <Message text={appearNote.text} />
-    </Header>
+      <MkImage files={appearNote.files} />
+      <MkMessage text={appearNote.text} />
+    </MkHeader>
   )
 }
 
@@ -43,7 +49,7 @@ function QuoteRenote(appearNote: misskey.entities.Note) {
   const appearRenote = appearNote.renote!
 
   return (
-    <Header
+    <MkHeader
       createdAt={appearNote.createdAt}
       avatarUrl={appearNote.user.avatarUrl}
       user={{
@@ -51,7 +57,7 @@ function QuoteRenote(appearNote: misskey.entities.Note) {
         username: appearNote.user.username
       }}
     >
-      <Quote
+      <MkQuote
         createdAt={appearRenote.createdAt}
         avatarUrl={appearRenote.user.avatarUrl}
         user={{
@@ -60,8 +66,8 @@ function QuoteRenote(appearNote: misskey.entities.Note) {
         }}
         text={appearRenote.text!}
       />
-      <Message text={appearNote.text} />
-    </Header>
+      <MkMessage text={appearNote.text} />
+    </MkHeader>
   )
 }
 
@@ -70,13 +76,7 @@ function Renote(appearNote: misskey.entities.Note) {
   return (
     <View flexDirection="column" my={3}>
       <View flexDirection="row" left="50px" zIndex={1}>
-        <View
-          flexDirection="row"
-          justifyContent="center"
-          bg="accent.100"
-          px={1}
-          borderRadius={100}
-        >
+        <View flexDirection="row" bg="accent.100" px={1} borderRadius={100}>
           {/* <Avatar
             mr={1}
             source={{ uri: appearNote.user.avatarUrl }}
@@ -90,9 +90,12 @@ function Renote(appearNote: misskey.entities.Note) {
             </Text>
           </Center>
           <Center mx={1}>
-            <Text color="white.0">{`@${appearNote.user.username}`}</Text>
+            <Text color="white.1">{`@${appearNote.user.username}`}</Text>
           </Center>
         </View>
+        <Center ml={1}>
+          <Time fontSize={12} date={appearNote.createdAt} />
+        </Center>
       </View>
       <View
         position="absolute"
@@ -107,7 +110,7 @@ function Renote(appearNote: misskey.entities.Note) {
         borderTopWidth={3}
         borderColor="black.200"
       />
-      <Header
+      <MkHeader
         createdAt={appearRenote.createdAt}
         avatarUrl={appearRenote.user.avatarUrl}
         user={{
@@ -115,15 +118,16 @@ function Renote(appearNote: misskey.entities.Note) {
           username: appearRenote.user.username
         }}
       >
-        <Message text={appearRenote.text} />
-      </Header>
+        <MkImage files={appearRenote.files} />
+        <MkMessage text={appearRenote.text} />
+      </MkHeader>
     </View>
   )
 }
 
 //以下パーツ
 
-interface Header {
+type MkHeader = {
   children: React.ReactNode
   createdAt: string
   avatarUrl: string
@@ -133,27 +137,15 @@ interface Header {
   }
 }
 
-function Header(props: Header) {
+function MkHeader(props: MkHeader) {
   const { children, createdAt, avatarUrl, user } = props
   return (
     <View flexDirection="row" w="100%" maxW="100%" p={2}>
-      <Avatar
-        mx={2}
-        source={{ uri: avatarUrl }}
-        top={15}
-        width={10}
-        height={10}
-        borderRadius={100}
-      />
+      <Avatar mx={2} source={{ uri: avatarUrl }} top={15} width={10} height={10} borderRadius={100} />
       <View flexDirection="column" justifyContent="center" mx={2} maxW="82%">
         <View flexDirection="row">
           <View flexDirection="row" width="78%" overflow="hidden">
-            <Text
-              color="white.300"
-              fontSize={12}
-              fontWeight="bold"
-              numberOfLines={1}
-            >
+            <Text color="white.300" fontSize={15} fontWeight="bold" numberOfLines={1}>
               {user.name}
             </Text>
             <Text color="white.0" ml={2} fontSize={12} numberOfLines={1}>
@@ -170,32 +162,55 @@ function Header(props: Header) {
   )
 }
 
-interface Message {
+type MkMessage = {
   text: string | null
 }
 
-function Message(props: Message) {
+function MkMessage(props: MkMessage) {
   const { text } = props
   return (
     <View flexDirection="column" alignItems="flex-start">
-      <View>
-        <View
-          px={4}
-          py={3}
-          bg="black.200"
-          borderTopLeftRadius={5}
-          borderTopRightRadius={20}
-          borderBottomRightRadius={20}
-          borderBottomLeftRadius={20}
-        >
-          <Text fontSize={15}>{text}</Text>
-        </View>
+      <View px={4} py={3} bg="black.200" borderTopLeftRadius={5} borderTopRightRadius={20} borderBottomRightRadius={20} borderBottomLeftRadius={20}>
+        <Text fontSize={15}>{text}</Text>
       </View>
     </View>
   )
 }
 
-interface Quote {
+type MkImage = {
+  files: misskey.entities.DriveFile[]
+}
+
+function MkImage(props: MkImage) {
+  const { files } = props
+
+  if (!files.some(file => file.type === 'image/jpeg' || file.type === 'image/png')) return <View />
+
+  return (
+    <View bg="black.200" mb={1} p={2} borderTopRadius={20} borderBottomLeftRadius={5} borderBottomRightRadius={20}>
+      <View flex={1} flexWrap="wrap" flexDirection="row" borderRadius={18} overflow="hidden">
+        {files.map((file, index) => {
+          if (index > 4) return
+          if (file.type === 'image/jpeg' || file.type === 'image/png')
+            return (
+              <Image
+                key={file.id}
+                source={{ uri: file.url }}
+                alt="icon"
+                w="40%"
+                h="100"
+                ml={index === 0 || index === 2 ? 0 : '2px'}
+                mb={index === 0 || index === 0 ? 0 : '5px'}
+                flexGrow={1}
+              />
+            )
+        })}
+      </View>
+    </View>
+  )
+}
+
+type MkQuote = {
   createdAt: string
   avatarUrl: string
   user: {
@@ -205,71 +220,58 @@ interface Quote {
   text: string
 }
 
-function Quote(props: Quote) {
+function MkQuote(props: MkQuote) {
   const { createdAt, avatarUrl, user, text } = props
 
   return (
-    <View>
-      <View
-        maxW="100%"
-        px={3}
-        py={4}
-        mb={1}
-        bg="black.200"
-        borderTopLeftRadius={20}
-        borderTopRightRadius={20}
-        borderBottomRightRadius={20}
-        borderBottomLeftRadius={5}
-      >
-        <View flexDirection="row">
-          <View>
-            <Image
-              source={{ uri: avatarUrl }}
-              alt="icon"
-              style={{
-                width: 30,
-                height: 30,
-                borderRadius: 100
-              }}
-            />
+    <View
+      maxW="100%"
+      px={3}
+      py={4}
+      mb={1}
+      bg="black.200"
+      borderTopLeftRadius={20}
+      borderTopRightRadius={20}
+      borderBottomRightRadius={20}
+      borderBottomLeftRadius={5}
+    >
+      <View flexDirection="row">
+        <Image
+          source={{ uri: avatarUrl }}
+          alt="icon"
+          style={{
+            width: 30,
+            height: 30,
+            borderRadius: 100
+          }}
+        />
+
+        <View flexDirection="column" justifyContent="center" mx={2} maxW="90%">
+          <View flexDirection="row">
+            <View flexDirection="row" width="78%" overflow="hidden">
+              <Text color="white.300" fontSize={12} fontWeight="bold" numberOfLines={1}>
+                {user.name}
+              </Text>
+              <Text color="white.0" ml={2} fontSize={12} numberOfLines={1}>
+                {`@${user.username}`}
+              </Text>
+            </View>
+            <View position="absolute" right={0} mx={3}>
+              <Time fontSize={12} date={createdAt} />
+            </View>
           </View>
           <View
-            flexDirection="column"
-            justifyContent="center"
-            mx={2}
-            maxW="90%"
+            px={3}
+            py={2}
+            bg="transparent"
+            borderColor="white.0"
+            borderWidth={1}
+            borderTopLeftRadius={1}
+            borderTopRightRadius={10}
+            borderBottomRightRadius={10}
+            borderBottomLeftRadius={10}
           >
-            <View flexDirection="row">
-              <View flexDirection="row" width="78%" overflow="hidden">
-                <Text
-                  color="white.300"
-                  fontSize={12}
-                  fontWeight="bold"
-                  numberOfLines={1}
-                >
-                  {user.name}
-                </Text>
-                <Text color="white.0" ml={2} fontSize={12} numberOfLines={1}>
-                  {`@${user.username}`}
-                </Text>
-              </View>
-              <View position="absolute" right={0} mx={3}>
-                <Time fontSize={12} date={createdAt} />
-              </View>
-            </View>
-            <View
-              px={3}
-              py={2}
-              bg="transparent"
-              borderColor="white.0"
-              borderWidth={1}
-              borderTopLeftRadius={1}
-              borderTopRightRadius={10}
-              borderBottomRightRadius={10}
-              borderBottomLeftRadius={10}
-            >
-              <Text fontSize={15}>{text}</Text>
-            </View>
+            <Text fontSize={15}>{text}</Text>
           </View>
         </View>
       </View>

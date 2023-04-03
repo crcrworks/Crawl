@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react'
-import { TouchableOpacity, Image } from 'react-native'
-import { HStack, IconButton, Icon, View, Button } from 'native-base'
+import { TouchableOpacity } from 'react-native'
+import { HStack, IconButton, Icon, View, Button, Image } from 'native-base'
 import { Feather, Entypo } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
 import { DrawerNavigationProp } from '@react-navigation/drawer'
@@ -21,15 +21,11 @@ function SidebarIcon() {
       <Image
         source={require('crawl/assets/icon.png')}
         alt="icon"
-        style={{
-          width: 35,
-          height: 35,
-          marginLeft: 'auto',
-          marginRight: 'auto',
-          justifyContent: 'center',
-          alignItems: 'center',
-          borderRadius: 100
-        }}
+        w={35}
+        h={35}
+        ml="auto"
+        mr="auto"
+        borderRadius={100}
       />
     </TouchableOpacity>
   )

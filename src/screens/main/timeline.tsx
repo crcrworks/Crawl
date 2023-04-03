@@ -4,7 +4,7 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 
 import LocalScreen from './timeline/local'
 import GlobalScreen from './timeline/global'
-import { NavigationTopContainer } from 'crawl/src/components/navigation/top-bar'
+import { NavigationTopContainer } from '@/components/navigation/top-bar'
 
 const tab = createMaterialTopTabNavigator()
 

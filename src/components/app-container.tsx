@@ -2,9 +2,9 @@ import * as React from 'react'
 import { NavigationContainer } from '@react-navigation/native'
 import { NativeBaseProvider } from 'native-base'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
-import theme from 'crawl/src/theme'
+import theme from '@/theme'
 
-interface AppContainerProps {
+type AppContainerProps = {
   children: React.ReactNode
 }
 

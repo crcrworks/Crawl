@@ -1,9 +1,9 @@
 import React from 'react'
 import { View, Text } from 'native-base'
 
-import locales from 'crawl/locales/JP.json'
+import locales from '@/../locales/JP.json'
 
-interface Props {
+type Props = {
   fontSize: number
   date: string
 }

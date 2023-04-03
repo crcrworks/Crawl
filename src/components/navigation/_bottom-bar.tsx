@@ -34,7 +34,6 @@ import screenState, { screenOrganizetion } from '../../screens-state'
 import { ParamListBase, TabNavigationState } from '@react-navigation/native'
 import { Route } from 'react-native-tab-view'
 import CreateNoteIcon from '../create-note-button'
-import { shadow } from 'react-native-paper'
 
 interface InnerRoutes {
   id: string

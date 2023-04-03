@@ -1,30 +1,17 @@
 import { useEffect } from 'react'
-import {
-  View,
-  useTheme,
-  themeTools,
-  useColorModeValue,
-  useColorMode
-} from 'native-base'
+import { View, Center, useTheme, themeTools, useColorModeValue, useColorMode } from 'native-base'
 import { Platform } from 'react-native'
-import {
-  createMaterialTopTabNavigator,
-  MaterialTopTabBar
-} from '@react-navigation/material-top-tabs'
+import { createMaterialTopTabNavigator, MaterialTopTabBar } from '@react-navigation/material-top-tabs'
 import { LinearGradient } from 'expo-linear-gradient'
-import Animated, {
-  Easing,
-  useAnimatedStyle,
-  useSharedValue,
-  withTiming
-} from 'react-native-reanimated'
+import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Defs, RadialGradient, Svg, Stop, Rect } from 'react-native-svg'
 import { TabBar } from 'react-native-tab-view'
+import { rgba } from 'polished'
 
-import CreateNoteIcon from 'crawl/src/components/create-note-button'
+import CreateNoteIcon from '@/components/create-note-button'
 
-interface NavigationBottomContainerProps {
+type NavigationBottomContainerProps = {
   children: React.ReactNode
 }
 
@@ -35,19 +22,11 @@ function NavigationBottomContainer(props: NavigationBottomContainerProps) {
   const theme = useTheme()
   const color = {
     accent: themeTools.getColor(theme, 'accent.100'),
-    active: themeTools.getColor(
-      theme,
-      useColorModeValue('black.100', 'white.100')
-    ),
-    inactive: themeTools.getColor(
-      theme,
-      useColorModeValue('black.1', 'white.1')
-    ),
+    active: themeTools.getColor(theme, useColorModeValue('black.100', 'white.100')),
+    inactive: themeTools.getColor(theme, useColorModeValue('black.1', 'white.1')),
     border: themeTools.getColor(theme, useColorModeValue('black.0', 'white.0')),
-    indicator: themeTools.getColor(
-      theme,
-      useColorModeValue('black.300', 'white.300')
-    )
+    indicator: themeTools.getColor(theme, useColorModeValue('black.300', 'white.300')),
+    background: themeTools.getColor(theme, useColorModeValue('white.300', 'black.300'))
   }
 
   return (
@@ -88,13 +67,10 @@ function NavigationBottomContainer(props: NavigationBottomContainerProps) {
             }
           })
           useEffect(() => {
-            translateX.value = withTiming(
-              (width / length) * index + width / length / 4,
-              {
-                easing: Easing.elastic(),
-                duration: 500
-              }
-            )
+            translateX.value = withTiming((width / length) * index + width / length / 4, {
+              easing: Easing.elastic(),
+              duration: 500
+            })
           }, [indicatorProps])
 
           return (
@@ -119,28 +95,28 @@ function NavigationBottomContainer(props: NavigationBottomContainerProps) {
           <View>
             <View position="absolute" bottom={0} w={'100%'} zIndex={400}>
               <SafeAreaView style={{ flex: 1 }}>
-                <View
-                  flexDirection={'row'}
-                  style={{
-                    bottom: 10
-                  }}
-                >
-                  <View
-                    flex={1}
-                    h="35px"
-                    borderLeftRadius={0}
-                    borderRightRadius={100}
-                    borderColor={color.border}
-                    borderTopWidth={1}
-                    borderRightWidth={1}
-                    borderBottomWidth={1}
-                  >
-                    <MaterialTopTabBar {...tabBarProps} />
+                <LinearGradient colors={[rgba(color.background, 0), rgba(color.background, 1)]} start={{ x: 0.5, y: 0.1 }} end={{ x: 0.5, y: 0.8 }}>
+                  <View h="70px" justifyContent="flex-end" mb={Platform.OS === 'ios' ? 0 : 3}>
+                    <View flexDirection={'row'}>
+                      <View
+                        flex={1}
+                        h="35px"
+                        borderLeftRadius={0}
+                        borderRightRadius={100}
+                        borderColor={color.border}
+                        borderTopWidth={1}
+                        borderRightWidth={1}
+                        borderBottomWidth={1}
+                        bg="#00000083"
+                      >
+                        <MaterialTopTabBar {...tabBarProps} />
+                      </View>
+                      <View w="110px">
+                        <CreateNoteIcon />
+                      </View>
+                    </View>
                   </View>
-                  <View w="110px">
-                    <CreateNoteIcon />
-                  </View>
-                </View>
+                </LinearGradient>
               </SafeAreaView>
             </View>
             <SafeAreaView edges={['bottom']}>
@@ -171,10 +147,7 @@ function BackgroundGlow(props: BackgroundGlowProps) {
   const r = isIOS ? round / 100 : (round - 15) / 100
 
   const theme = useTheme()
-  const colorEnd = themeTools.getColor(
-    theme,
-    useColorModeValue('light.300', 'dark.300')
-  )
+  const colorEnd = themeTools.getColor(theme, useColorModeValue('light.300', 'dark.300'))
 
   return (
     <View position="absolute" left={left} bottom={isIOS ? -15 : -50} zIndex={0}>
