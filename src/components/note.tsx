@@ -13,7 +13,7 @@ function AppearNote(props: Props) {
 
   const AppearNote = useMemo(() => {
     const noteType: 'note' | 'renote' | 'quoteRenote' | 'unknown' = (() => {
-      if (!appearNote.createdAt) return 'unknown'
+      if (!appearNote.createdAt || !(appearNote.cw === null)) return 'unknown'
       if (!appearNote.text) return 'renote'
       if (!appearNote.renoteId) return 'note'
       return 'quoteRenote'
@@ -195,7 +195,7 @@ function MkImage(props: MkImage) {
             return (
               <Image
                 key={file.id}
-                source={{ uri: file.url }}
+                source={{ uri: file.isSensitive ? file.url : '' }}
                 alt="icon"
                 w="40%"
                 h="100"

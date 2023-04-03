@@ -3,10 +3,6 @@ import { FlatList, ScrollView, View, Text } from 'native-base'
 import AppearNote from '@/components/note'
 import { Connection } from '@/scripts/api'
 
-import RenoteOnlySample from '@/../note-sample/renote-only.json'
-import RenoteSample from '@/../note-sample/renote.json'
-import NoteSample from '@/../note-sample/note.json'
-import NoteWithImage from '@/../note-sample/note-with-image.json'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import shortid from 'shortid'
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing } from 'react-native-reanimated'
@@ -30,11 +26,13 @@ function AppearNoteList() {
 
   const addData = useCallback((data: Data) => {
     setData(prevData => {
-      if (prevData.find(item => item.id === data.id)) return prevData
+      if (prevData.find(n => n.note.id === data.note.id)) return prevData
+
       if (prevData.length >= 10) {
         prevData.pop()
       }
-      return [data, ...prevData]
+
+      return [{ id: shortid.generate(), note: data.note }, ...prevData]
     })
   }, [])
 
@@ -44,29 +42,11 @@ function AppearNoteList() {
     }
   }, [])
 
-  const [test, setTest] = useState<misskey.entities.Note[]>([])
-
   localChannel.on('note', note => {
-    // if (data.find(item => item.id === note.id)) return
-    // addData({ id: shortid.generate(), note: note as any })
-    /* console.log(data.length) */
+    if (data.find(n => n.id === note.id)) return
 
-    if (test.find(n => n.id === note.id)) return
-
-    setData(prevData => {
-      if (prevData.find(n => n.note.id === note.id)) return prevData
-
-      if (prevData.length >= 10) {
-        prevData.pop()
-      }
-
-      return [{ id: shortid.generate(), note: note }, ...prevData]
-    })
+    addData({ id: shortid.generate(), note })
   })
-
-  useEffect(() => {
-    console.log(data.length)
-  }, [data])
 
   return (
     <FlatList
