@@ -1,11 +1,24 @@
 import axios from 'axios'
 import * as misskey from 'misskey-js'
+
 import { Endpoints } from 'misskey-js/built/api.types'
 
-const apiURL = 'https://misskey.io'
+const origin = 'https://misskey.io'
+import { TOKEN } from '@/../env'
 
-function apiGet<E extends keyof Endpoints, P extends Endpoints[E]['req']>(endpoint: E, data: P = {} as any) {
-  axios.get(`${apiURL}/${endpoint}`)
+const client = new misskey.api.APIClient({
+  origin: origin,
+  credential: TOKEN
+})
+
+export async function apiGet<E extends keyof misskey.Endpoints, P extends misskey.Endpoints[E]['req']>(
+  endpoint: E,
+  params?: P,
+  credential?: string | null | undefined
+) {
+  return await client.request(endpoint, params).then(data => {
+    return data
+  })
 }
 
 // const stream = new misskey.Stream('https://misskey.io/', { token: TOKEN })
@@ -20,7 +33,7 @@ function apiGet<E extends keyof Endpoints, P extends Endpoints[E]['req']>(endpoi
 //   console.log(note)
 // })
 
-export function Connection() {}
+// export function Connection() {}
 
 // axios
 //   .get(`https://misskey.io/api/emojis`)

@@ -11,10 +11,10 @@ type Props = {
 const agoMessages = locales.ago
 
 function Time(props: Props) {
-  const { fontSize } = props
+  const { fontSize, date } = props
 
   const relative = (() => {
-    const ago = (new Date().getTime() - new Date(props.date).getTime()) / 1000 //ms
+    const ago = (new Date().getTime() - new Date(date).getTime()) / 1000 //ms
 
     return ago >= 31536000
       ? `${Math.round(ago / 31536000)}${agoMessages.yearsAgo}`

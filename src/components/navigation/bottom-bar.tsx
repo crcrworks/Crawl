@@ -12,13 +12,14 @@ import { rgba } from 'polished'
 import CreateNoteIcon from '@/components/create-note-button'
 
 type NavigationBottomContainerProps = {
+  initialRouteName: string
   children: React.ReactNode
 }
 
 const tab = createMaterialTopTabNavigator()
 
 function NavigationBottomContainer(props: NavigationBottomContainerProps) {
-  const { children } = props
+  const { children, initialRouteName } = props
   const theme = useTheme()
   const color = {
     accent: themeTools.getColor(theme, 'accent.100'),
@@ -32,7 +33,7 @@ function NavigationBottomContainer(props: NavigationBottomContainerProps) {
   return (
     <tab.Navigator
       tabBarPosition="bottom"
-      initialRouteName="Timeline"
+      initialRouteName={initialRouteName}
       screenOptions={{
         swipeEnabled: false,
         animationEnabled: false,

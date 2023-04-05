@@ -1,37 +1,52 @@
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
+import { TouchableOpacity } from 'react-native'
 import { View, Text, Center, Image, Avatar } from 'native-base'
+import * as Haptics from 'expo-haptics'
+
+import { useAtom } from 'jotai'
+import { OpenReactionScreenAtom } from '@/atoms/atoms'
+
 import * as mfm from 'mfm-js'
 import misskey from 'misskey-js'
-import Time from './time'
+import Time from '../time'
 
-type Props = {
-  appearNote: misskey.entities.Note
+export type NoteType = 'note' | 'renote' | 'quoteRenote' | 'unknown'
+
+export function JudgementNoteType(appearNote: misskey.entities.Note): NoteType {
+  if (!(appearNote.cw === null)) return 'unknown'
+  if (!appearNote.text) return 'renote'
+  if (!appearNote.renoteId) return 'note'
+  return 'quoteRenote'
 }
 
-function AppearNote(props: Props) {
+type AppearNoteProps = {
+  appearNote: misskey.entities.Note
+  setIsOpenBottomSheet: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+function AppearNote(props: AppearNoteProps) {
   const { appearNote } = props
 
+  if (appearNote.createdAt === undefined) appearNote.createdAt = ''
+  if (appearNote.renote && appearNote.renote.createdAt === undefined) appearNote.renote.createdAt = ''
+
   const AppearNote = useMemo(() => {
-    const noteType: 'note' | 'renote' | 'quoteRenote' | 'unknown' = (() => {
-      if (!appearNote.createdAt || !(appearNote.cw === null)) return 'unknown'
-      if (!appearNote.text) return 'renote'
-      if (!appearNote.renoteId) return 'note'
-      return 'quoteRenote'
-    })()
-
-    if (noteType === 'note') return <Note {...appearNote} />
-    if (noteType === 'quoteRenote') return <QuoteRenote {...appearNote} />
-    if (noteType === 'renote') return <Renote {...appearNote} />
-
+    if (JudgementNoteType(appearNote) === 'note') return <Note {...props} />
+    if (JudgementNoteType(appearNote) === 'quoteRenote') return <QuoteRenote {...props} />
+    if (JudgementNoteType(appearNote) === 'renote') return <Renote {...props} />
     return <View />
   }, [appearNote])
 
   return AppearNote
 }
 
-function Note(appearNote: misskey.entities.Note) {
+function Note(props: AppearNoteProps) {
+  const { appearNote, setIsOpenBottomSheet } = props
+
   return (
     <MkHeader
+      setIsOpenBottomSheet={setIsOpenBottomSheet}
+      noteId={appearNote.id}
       createdAt={appearNote.createdAt}
       avatarUrl={appearNote.user.avatarUrl}
       user={{
@@ -40,16 +55,23 @@ function Note(appearNote: misskey.entities.Note) {
       }}
     >
       <MkImage files={appearNote.files} />
-      <MkMessage text={appearNote.text} />
+      <View flexDirection="column" alignItems="flex-start">
+        <View px={4} py={3} bg="black.200" borderTopLeftRadius={5} borderTopRightRadius={20} borderBottomRightRadius={20} borderBottomLeftRadius={20}>
+          <Text fontSize={15}>{appearNote.text}</Text>
+        </View>
+      </View>
     </MkHeader>
   )
 }
 
-function QuoteRenote(appearNote: misskey.entities.Note) {
+function QuoteRenote(props: AppearNoteProps) {
+  const { appearNote, setIsOpenBottomSheet } = props
   const appearRenote = appearNote.renote!
 
   return (
     <MkHeader
+      setIsOpenBottomSheet={setIsOpenBottomSheet}
+      noteId={appearNote.id}
       createdAt={appearNote.createdAt}
       avatarUrl={appearNote.user.avatarUrl}
       user={{
@@ -71,8 +93,11 @@ function QuoteRenote(appearNote: misskey.entities.Note) {
   )
 }
 
-function Renote(appearNote: misskey.entities.Note) {
-  const appearRenote = appearNote.renote!
+function Renote(props: AppearNoteProps) {
+  const { appearNote, setIsOpenBottomSheet } = props
+
+  const appearRenote = appearNote.renote
+  if (!appearRenote) return <View />
   return (
     <View flexDirection="column" my={3}>
       <View flexDirection="row" left="50px" zIndex={1}>
@@ -111,6 +136,8 @@ function Renote(appearNote: misskey.entities.Note) {
         borderColor="black.200"
       />
       <MkHeader
+        setIsOpenBottomSheet={setIsOpenBottomSheet}
+        noteId={appearNote.id}
         createdAt={appearRenote.createdAt}
         avatarUrl={appearRenote.user.avatarUrl}
         user={{
@@ -128,6 +155,8 @@ function Renote(appearNote: misskey.entities.Note) {
 //以下パーツ
 
 type MkHeader = {
+  setIsOpenBottomSheet: React.Dispatch<React.SetStateAction<boolean>>
+  noteId: string
   children: React.ReactNode
   createdAt: string
   avatarUrl: string
@@ -138,27 +167,45 @@ type MkHeader = {
 }
 
 function MkHeader(props: MkHeader) {
-  const { children, createdAt, avatarUrl, user } = props
+  const { setIsOpenBottomSheet, noteId, children, createdAt, avatarUrl, user } = props
+
   return (
-    <View flexDirection="row" w="100%" maxW="100%" p={2}>
-      <Avatar mx={2} source={{ uri: avatarUrl }} top={15} width={10} height={10} borderRadius={100} />
-      <View flexDirection="column" justifyContent="center" mx={2} maxW="82%">
-        <View flexDirection="row">
-          <View flexDirection="row" width="78%" overflow="hidden">
-            <Text color="white.300" fontSize={15} fontWeight="bold" numberOfLines={1}>
-              {user.name}
-            </Text>
-            <Text color="white.0" ml={2} fontSize={12} numberOfLines={1}>
-              {`@${user.username}`}
-            </Text>
+    <TouchableOpacity
+      delayLongPress={300}
+      activeOpacity={1}
+      style={{}}
+      onLongPress={() => {
+        setIsOpenBottomSheet(true)
+      }}
+    >
+      <View flexDirection="row" w="100%" maxW="100%" p={2}>
+        <TouchableOpacity
+          style={{ top: 15, margin: 2, height: 40 }}
+          onPress={() => {
+            console.log(user.name)
+          }}
+        >
+          <Avatar source={{ uri: avatarUrl }} width="40px" height="40px" borderRadius={100} />
+        </TouchableOpacity>
+        <View flexDirection="column" justifyContent="center" mx={2} maxW="82%">
+          <View flexDirection="row">
+            <View flexDirection="row" width="78%" overflow="hidden">
+              <Text color="white.300" fontSize={15} fontWeight="bold" numberOfLines={1}>
+                {user.name}
+              </Text>
+              <Text color="white.0" ml={2} fontSize={12} numberOfLines={1}>
+                {`@${user.username}`}
+              </Text>
+            </View>
+            <View position="absolute" right={0} mx={3}>
+              {createdAt && <Time fontSize={12} date={createdAt} />}
+            </View>
           </View>
-          <View position="absolute" right={0} mx={3}>
-            <Time fontSize={12} date={createdAt} />
-          </View>
+
+          <View flexDirection="column">{children}</View>
         </View>
-        <View flexDirection="column">{children}</View>
       </View>
-    </View>
+    </TouchableOpacity>
   )
 }
 
@@ -195,7 +242,7 @@ function MkImage(props: MkImage) {
             return (
               <Image
                 key={file.id}
-                source={{ uri: file.isSensitive ? file.url : '' }}
+                source={{ uri: 'https://placehold.jp/150x150.png' }}
                 alt="icon"
                 w="40%"
                 h="100"

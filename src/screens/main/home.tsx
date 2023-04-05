@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react'
+import { View } from 'native-base'
 
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
 
@@ -8,7 +9,7 @@ import { NavigationTopContainer } from '@/components/navigation/top-bar'
 
 const tab = createMaterialTopTabNavigator()
 
-function TimelineScreen({ route }: any) {
+function HomeScreen({ route }: any) {
   return (
     <NavigationTopContainer>
       <tab.Screen name="Local" component={LocalScreen} />
@@ -17,4 +18,4 @@ function TimelineScreen({ route }: any) {
   )
 }
 
-export default TimelineScreen
+export default HomeScreen

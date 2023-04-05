@@ -6,16 +6,16 @@ import { createMaterialBottomTabNavigator } from '@react-navigation/material-bot
 import { createMaterialTopTabNavigator, MaterialTopTabBar, MaterialTopTabBarProps } from '@react-navigation/material-top-tabs'
 import shortid from 'shortid'
 import { Defs, RadialGradient, Svg, Stop, Rect } from 'react-native-svg'
+import { BlurView } from 'expo-blur'
 
 import { useAtom } from 'jotai'
-import { TopTabIndexAtom, BottomTabIndicatorIndexAtom } from '../atoms/atoms'
+import { OpenReactionScreenAtom } from '../atoms/atoms'
 
 import SearchScreen from '@/screens/main/search'
-import TimelineScreen from '@/screens/main/timeline'
+import HomeScreen from '@/screens/main/home'
 import NotificationScreen from '@/screens/main/notification'
 import NavigationBottomContainer from '@/components/navigation/bottom-bar'
 import SidebarIcon from '@/components/sidebar-icon'
-import { BlurView } from 'expo-blur'
 
 const tab = createMaterialTopTabNavigator()
 
@@ -25,9 +25,10 @@ export type TopTabState = {
 }
 
 function Main() {
+  const [openReactionScreen, setOpenReactionScreen] = useAtom(OpenReactionScreenAtom)
   return (
     <View flex={1} backgroundColor={useColorModeValue('white.300', 'black.300')}>
-      <NavigationBottomContainer>
+      <NavigationBottomContainer initialRouteName="Home">
         <tab.Screen
           name="Notification"
           component={NotificationScreen}
@@ -36,8 +37,8 @@ function Main() {
           }}
         />
         <tab.Screen
-          name="Timeline"
-          component={TimelineScreen}
+          name="Home"
+          component={HomeScreen}
           options={{
             tabBarIcon: ({ color }) => <Icon as={Entypo} name="home" color={color}></Icon>
           }}

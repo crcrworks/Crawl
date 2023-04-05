@@ -1,8 +1,13 @@
 import * as misskey from 'misskey-js'
 
 import stream from '@/stream'
+import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm'
 
-const main = stream.useChannel('main')
+export const main = stream.useChannel('main')
 export const localChannel = stream.useChannel('localTimeline')
 
-export function init() {}
+import noteTest from '@/../note-sample/note.json'
+
+export function init() {
+  extractCustomEmojisFromMfm(noteTest.text)
+}
