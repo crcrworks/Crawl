@@ -94,8 +94,8 @@ const NavigationBottomContainer = (props: NavigationBottomContainerProps) => {
       tabBar={tabBarProps => {
         return (
           <View position="absolute" bottom={0} w={'100%'} zIndex={400}>
-            <SafeAreaView style={{ flex: 1 }}>
-              <LinearGradient colors={[rgba(color.background, 0), rgba(color.background, 1)]} start={{ x: 0.5, y: 0.1 }} end={{ x: 0.5, y: 0.8 }}>
+            <LinearGradient colors={[rgba(color.background, 0), rgba(color.background, 1)]} start={{ x: 0.5, y: 0.2 }} end={{ x: 0.5, y: 0.5 }}>
+              <SafeAreaView edges={['bottom']} style={{ flex: 1 }}>
                 <View h="70px" justifyContent="flex-end" mb={Platform.OS === 'ios' ? 0 : 3}>
                   <View flexDirection={'row'}>
                     <View
@@ -116,8 +116,8 @@ const NavigationBottomContainer = (props: NavigationBottomContainerProps) => {
                     </View>
                   </View>
                 </View>
-              </LinearGradient>
-            </SafeAreaView>
+              </SafeAreaView>
+            </LinearGradient>
           </View>
         )
       }}

@@ -7,7 +7,7 @@ import ThemeToggle from '@/components/theme-toggle'
 import SidebarIcon from '@/components/sidebar-icon'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
-function Sidebar(props: DrawerContentComponentProps) {
+const Sidebar = (props: DrawerContentComponentProps) => {
   return (
     <View _dark={{ bg: 'black.200' }} _light={{ bg: 'white.200' }} flex={1}>
       <SafeAreaView>
