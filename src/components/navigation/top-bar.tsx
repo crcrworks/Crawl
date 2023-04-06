@@ -13,18 +13,10 @@ const tab = createMaterialTopTabNavigator()
 
 type NavigationTopContainerProps = {
   children: React.ReactNode
-  // BottomTabIndicatorIndexAdd: number
-  // setTopIndex: any
-  // setBottomTabIndicatorIndex: any
 }
 
-export function NavigationTopContainer(props: NavigationTopContainerProps) {
-  const {
-    children
-    // setTopIndex,
-    // setBottomTabIndicatorIndex,
-    // BottomTabIndicatorIndexAdd
-  } = props
+export const NavigationTopContainer = (props: NavigationTopContainerProps) => {
+  const { children } = props
 
   const theme = useTheme()
   const color = {
@@ -51,7 +43,6 @@ export function NavigationTopContainer(props: NavigationTopContainerProps) {
           textTransform: 'none'
         },
         tabBarBounces: true,
-
         tabBarIndicator: navigationProps => {
           const index = navigationProps.state.index
           const number = navigationProps.state.routes.length

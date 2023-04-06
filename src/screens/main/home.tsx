@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react'
 import { View } from 'native-base'
-
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
 
 import LocalScreen from './timeline/local'
@@ -9,7 +8,7 @@ import { NavigationTopContainer } from '@/components/navigation/top-bar'
 
 const tab = createMaterialTopTabNavigator()
 
-function HomeScreen({ route }: any) {
+const HomeScreen = ({ route }: any) => {
   return (
     <NavigationTopContainer>
       <tab.Screen name="Local" component={LocalScreen} />

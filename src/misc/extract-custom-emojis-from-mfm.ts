@@ -1,7 +1,7 @@
 import * as mfm from 'mfm-js'
 import { unique } from '@/misc/prelude/array'
 
-export function extractCustomEmojisFromMfm(nodes: mfm.MfmNode[]): string[] {
+export const extractCustomEmojisFromMfm = (nodes: mfm.MfmNode[]): string[] => {
   const emojiNodes = mfm.extract(nodes, node => {
     return node.type === 'emojiCode' && node.props.name.length <= 100
   }) as mfm.MfmEmojiCode[]

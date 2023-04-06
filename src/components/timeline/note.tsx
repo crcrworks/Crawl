@@ -2,17 +2,14 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { TouchableOpacity } from 'react-native'
 import { View, Text, Center, Image, Avatar } from 'native-base'
 import * as Haptics from 'expo-haptics'
-
-import { useAtom } from 'jotai'
-import { OpenReactionScreenAtom } from '@/atoms/atoms'
-
 import * as mfm from 'mfm-js'
 import misskey from 'misskey-js'
+
 import Time from '../time'
 
 export type NoteType = 'note' | 'renote' | 'quoteRenote' | 'unknown'
 
-export function JudgementNoteType(appearNote: misskey.entities.Note): NoteType {
+export const JudgementNoteType = (appearNote: misskey.entities.Note): NoteType => {
   if (!(appearNote.cw === null)) return 'unknown'
   if (!appearNote.text) return 'renote'
   if (!appearNote.renoteId) return 'note'
@@ -21,10 +18,12 @@ export function JudgementNoteType(appearNote: misskey.entities.Note): NoteType {
 
 type AppearNoteProps = {
   appearNote: misskey.entities.Note
+  textContent: any
+  renoteTextContent: any
   setIsOpenBottomSheet: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-function AppearNote(props: AppearNoteProps) {
+const AppearNote = (props: AppearNoteProps) => {
   const { appearNote } = props
 
   if (appearNote.createdAt === undefined) appearNote.createdAt = ''
@@ -40,8 +39,8 @@ function AppearNote(props: AppearNoteProps) {
   return AppearNote
 }
 
-function Note(props: AppearNoteProps) {
-  const { appearNote, setIsOpenBottomSheet } = props
+const Note = (props: AppearNoteProps) => {
+  const { appearNote, setIsOpenBottomSheet, textContent } = props
 
   return (
     <MkHeader
@@ -56,16 +55,16 @@ function Note(props: AppearNoteProps) {
     >
       <MkImage files={appearNote.files} />
       <View flexDirection="column" alignItems="flex-start">
-        <View px={4} py={3} bg="black.200" borderTopLeftRadius={5} borderTopRightRadius={20} borderBottomRightRadius={20} borderBottomLeftRadius={20}>
-          <Text fontSize={15}>{appearNote.text}</Text>
+        <View bg="black.200" borderTopLeftRadius={5} borderTopRightRadius={20} borderBottomRightRadius={20} borderBottomLeftRadius={20}>
+          <MkMessage textContent={textContent} />
         </View>
       </View>
     </MkHeader>
   )
 }
 
-function QuoteRenote(props: AppearNoteProps) {
-  const { appearNote, setIsOpenBottomSheet } = props
+const QuoteRenote = (props: AppearNoteProps) => {
+  const { appearNote, setIsOpenBottomSheet, textContent } = props
   const appearRenote = appearNote.renote!
 
   return (
@@ -88,13 +87,13 @@ function QuoteRenote(props: AppearNoteProps) {
         }}
         text={appearRenote.text!}
       />
-      <MkMessage text={appearNote.text} />
+      <MkMessage textContent={textContent} />
     </MkHeader>
   )
 }
 
-function Renote(props: AppearNoteProps) {
-  const { appearNote, setIsOpenBottomSheet } = props
+const Renote = (props: AppearNoteProps) => {
+  const { renoteTextContent, appearNote, setIsOpenBottomSheet } = props
 
   const appearRenote = appearNote.renote
   if (!appearRenote) return <View />
@@ -146,7 +145,7 @@ function Renote(props: AppearNoteProps) {
         }}
       >
         <MkImage files={appearRenote.files} />
-        <MkMessage text={appearRenote.text} />
+        <MkMessage textContent={renoteTextContent} />
       </MkHeader>
     </View>
   )
@@ -154,6 +153,8 @@ function Renote(props: AppearNoteProps) {
 
 //以下パーツ
 
+//ヘッダー
+//アイコンや名前、投稿時間などが含まれる。
 type MkHeader = {
   setIsOpenBottomSheet: React.Dispatch<React.SetStateAction<boolean>>
   noteId: string
@@ -166,7 +167,7 @@ type MkHeader = {
   }
 }
 
-function MkHeader(props: MkHeader) {
+const MkHeader = (props: MkHeader) => {
   const { setIsOpenBottomSheet, noteId, children, createdAt, avatarUrl, user } = props
 
   return (
@@ -209,26 +210,33 @@ function MkHeader(props: MkHeader) {
   )
 }
 
+//メッセージ
+//MfmDONをReactNodeに変換したものを表示
 type MkMessage = {
-  text: string | null
+  textContent: any
 }
 
-function MkMessage(props: MkMessage) {
-  const { text } = props
+const MkMessage = (props: MkMessage) => {
+  const { textContent } = props
+
   return (
     <View flexDirection="column" alignItems="flex-start">
-      <View px={4} py={3} bg="black.200" borderTopLeftRadius={5} borderTopRightRadius={20} borderBottomRightRadius={20} borderBottomLeftRadius={20}>
-        <Text fontSize={15}>{text}</Text>
+      <View px={5} py={4} bg="black.200" borderTopLeftRadius={5} borderTopRightRadius={20} borderBottomRightRadius={20} borderBottomLeftRadius={20}>
+        <View flexDirection="row" flexWrap="wrap">
+          {textContent}
+        </View>
       </View>
     </View>
   )
 }
 
+//画像/動画
+//音声ファイルなどは含まれない。
 type MkImage = {
   files: misskey.entities.DriveFile[]
 }
 
-function MkImage(props: MkImage) {
+const MkImage = (props: MkImage) => {
   const { files } = props
 
   if (!files.some(file => file.type === 'image/jpeg' || file.type === 'image/png')) return <View />
@@ -257,6 +265,7 @@ function MkImage(props: MkImage) {
   )
 }
 
+//引用リツイートの内容
 type MkQuote = {
   createdAt: string
   avatarUrl: string
@@ -267,7 +276,7 @@ type MkQuote = {
   text: string
 }
 
-function MkQuote(props: MkQuote) {
+const MkQuote = (props: MkQuote) => {
   const { createdAt, avatarUrl, user, text } = props
 
   return (

@@ -8,7 +8,7 @@ type AppContainerProps = {
   children: React.ReactNode
 }
 
-function AppContainer(props: AppContainerProps) {
+const AppContainer = (props: AppContainerProps) => {
   return (
     <SafeAreaProvider>
       <NavigationContainer>

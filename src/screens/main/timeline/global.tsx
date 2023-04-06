@@ -1,9 +1,15 @@
 import React, { useEffect, useRef } from 'react'
-import { Center, Box, Text, useColorModeValue, Image } from 'native-base'
+import { Center, Box, Text, useColorModeValue, Image, View } from 'native-base'
 import Lottie from 'lottie-react-native'
 import { Animated, Easing } from 'react-native'
+import * as mfm from 'mfm-js'
+import { toReactNode } from '@/backend/mfm-service'
+import shortid from 'shortid'
 
-function GlocalScreen() {
+import { ConvertEmoji } from '@/backend/emoji-service'
+import { ReactNode } from 'react'
+
+const GlobalScreen = () => {
   const animationProgress = useRef(new Animated.Value(0))
   useEffect(() => {
     Animated.timing(animationProgress.current, {
@@ -14,22 +20,16 @@ function GlocalScreen() {
     }).start()
   }, [])
 
+  const node: ReactNode = <Text>Twitter:igyo:</Text>
+  const emoji = ConvertEmoji(node)
+
   return (
-    <Center
-      safeArea
-      _dark={{ bg: 'black.300' }}
-      _light={{ bg: 'white.300' }}
-      flex={1}
-    >
+    <Center safeArea _dark={{ bg: 'black.300' }} _light={{ bg: 'white.300' }} flex={1}>
       <Text color={useColorModeValue('blue.500', 'blue.300')}>Global</Text>
-      <Image
-        source={{ uri: 'https://placehold.jp/150x150.png' }}
-        width={100}
-        height={100}
-        alt="image"
-      />
+      <Image source={{ uri: 'https://placehold.jp/150x150.png' }} width={100} height={100} alt="image" />
+      {emoji}
     </Center>
   )
 }
 
-export default GlocalScreen
+export default GlobalScreen

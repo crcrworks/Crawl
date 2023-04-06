@@ -5,9 +5,6 @@ import BottomSheet, { BottomSheetView, useBottomSheetModal } from '@gorhom/botto
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import * as Haptics from 'expo-haptics'
 
-import { useAtom } from 'jotai'
-import { OpenReactionScreenAtom } from '@/atoms/atoms'
-
 type ReactionScreenProps = {
   isOpenBottomSheet: boolean
   setIsOpenBottomSheet: React.Dispatch<React.SetStateAction<boolean>>

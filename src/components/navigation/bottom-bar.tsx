@@ -18,7 +18,7 @@ type NavigationBottomContainerProps = {
 
 const tab = createMaterialTopTabNavigator()
 
-function NavigationBottomContainer(props: NavigationBottomContainerProps) {
+const NavigationBottomContainer = (props: NavigationBottomContainerProps) => {
   const { children, initialRouteName } = props
   const theme = useTheme()
   const color = {
@@ -93,39 +93,30 @@ function NavigationBottomContainer(props: NavigationBottomContainerProps) {
       }}
       tabBar={tabBarProps => {
         return (
-          <View>
-            <View position="absolute" bottom={0} w={'100%'} zIndex={400}>
-              <SafeAreaView style={{ flex: 1 }}>
-                <LinearGradient colors={[rgba(color.background, 0), rgba(color.background, 1)]} start={{ x: 0.5, y: 0.1 }} end={{ x: 0.5, y: 0.8 }}>
-                  <View h="70px" justifyContent="flex-end" mb={Platform.OS === 'ios' ? 0 : 3}>
-                    <View flexDirection={'row'}>
-                      <View
-                        flex={1}
-                        h="35px"
-                        borderLeftRadius={0}
-                        borderRightRadius={100}
-                        borderColor={color.border}
-                        borderTopWidth={1}
-                        borderRightWidth={1}
-                        borderBottomWidth={1}
-                        bg="#00000083"
-                      >
-                        <MaterialTopTabBar {...tabBarProps} />
-                      </View>
-                      <View w="110px">
-                        <CreateNoteIcon />
-                      </View>
+          <View position="absolute" bottom={0} w={'100%'} zIndex={400}>
+            <SafeAreaView style={{ flex: 1 }}>
+              <LinearGradient colors={[rgba(color.background, 0), rgba(color.background, 1)]} start={{ x: 0.5, y: 0.1 }} end={{ x: 0.5, y: 0.8 }}>
+                <View h="70px" justifyContent="flex-end" mb={Platform.OS === 'ios' ? 0 : 3}>
+                  <View flexDirection={'row'}>
+                    <View
+                      flex={1}
+                      h="35px"
+                      borderLeftRadius={0}
+                      borderRightRadius={100}
+                      borderColor={color.border}
+                      borderTopWidth={1}
+                      borderRightWidth={1}
+                      borderBottomWidth={1}
+                      bg="#00000083"
+                    >
+                      <MaterialTopTabBar {...tabBarProps} />
+                    </View>
+                    <View w="110px">
+                      <CreateNoteIcon />
                     </View>
                   </View>
-                </LinearGradient>
-              </SafeAreaView>
-            </View>
-            <SafeAreaView edges={['bottom']}>
-              {/* <View position="absolute" bottom="0" width="100%" height={100}> */}
-              {/* <BackgroundGlow color={color1} left={'-5%'} round={40} /> */}
-              {/* <BackgroundGlow color={color2} left={'20%'} round={50} /> */}
-              {/* <BackgroundGlow color={color1} left={'-0%'} round={40} /> */}
-              {/* </View> */}
+                </View>
+              </LinearGradient>
             </SafeAreaView>
           </View>
         )
@@ -142,7 +133,7 @@ interface BackgroundGlowProps {
   round: number
 }
 
-function BackgroundGlow(props: BackgroundGlowProps) {
+const BackgroundGlow = (props: BackgroundGlowProps) => {
   const { color, left, round } = props
   const isIOS = Platform.OS === 'ios'
   const r = isIOS ? round / 100 : (round - 15) / 100

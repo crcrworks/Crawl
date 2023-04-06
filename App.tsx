@@ -1,9 +1,14 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import AppContainer from './src/components/app-container'
 import Navigator from './src/'
 import { LogBox } from 'react-native'
 
-export default function App() {
+import { init } from '@/init'
+
+const App = () => {
+  useEffect(() => {
+    init()
+  })
   LogBox.ignoreLogs(['Sending'])
   return (
     <AppContainer>
@@ -11,3 +16,5 @@ export default function App() {
     </AppContainer>
   )
 }
+
+export default App

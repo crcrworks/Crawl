@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native'
 import { DrawerNavigationProp } from '@react-navigation/drawer'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
-function SidebarIcon() {
+const SidebarIcon = () => {
   const navigation = useNavigation<DrawerNavigationProp<{}>>()
   const handlePressMenuButton = useCallback(() => {
     navigation.openDrawer()
@@ -18,15 +18,7 @@ function SidebarIcon() {
 
   return (
     <TouchableOpacity onPress={handlePress}>
-      <Image
-        source={require('crawl/assets/icon.png')}
-        alt="icon"
-        w={35}
-        h={35}
-        ml="auto"
-        mr="auto"
-        borderRadius={100}
-      />
+      <Image source={require('crawl/assets/icon.png')} alt="icon" w={35} h={35} ml="auto" mr="auto" borderRadius={100} />
     </TouchableOpacity>
   )
 }

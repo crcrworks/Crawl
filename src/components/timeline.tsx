@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useRef, useMemo } from 'react'
+import React, { useState, useCallback, useEffect, useRef, useMemo, ReactNode } from 'react'
 import { LayoutAnimation, RefreshControl, UIManager, StyleSheet, VirtualizedList } from 'react-native'
 import { FlatList, View, Text, Spinner, Center } from 'native-base'
 import * as misskey from 'misskey-js'
@@ -6,40 +6,32 @@ import { MotiView } from 'moti'
 // import { createStackNavigator } from '@react-navigation/stack'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import BottomSheet from '@gorhom/bottom-sheet'
+import shortid from 'shortid'
 
-import { useAtom } from 'jotai'
-import { OpenReactionScreenAtom } from '@/atoms/atoms'
+import AppearNote, { JudgementNoteType } from './timeline/note'
+import ReactionScreen from '@/components/timeline/reaction'
+import { toReactNode } from '@/backend/mfm-service'
 
 import { apiGet } from '@/scripts/api'
-import shortid from 'shortid'
-import AppearNote from './timeline/note'
-
-import ReactionScreen from '@/components/timeline/reaction'
+import { ConvertEmoji } from '@/backend/emoji-service'
 
 type Data = {
   id: string
   note: misskey.entities.Note
+  textContent: any
+  renoteTextContent: any
 }
 
 // const Stack = createStackNavigator()
 
-function Timeline() {
+const Timeline = () => {
   useEffect(() => {
     handleEndReached(false)
   }, [])
 
-  const [openReactionScreen, setOpenReactionScreen] = useAtom(OpenReactionScreenAtom)
-
-  useEffect(() => {
-    //  data.map(item => {
-    //     if(item.note.id === )
-    //  })
-  }, [openReactionScreen])
-
   const [data, setData] = useState<Data[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [isEndReached, setIsEndReached] = useState(false)
-
   const [isOpenBottomSheet, setIsOpenBottomSheet] = useState(false)
 
   const handleDataUpdate = useCallback(
@@ -60,7 +52,14 @@ function Timeline() {
         await apiGet('notes/local-timeline', { limit: 50 })
           .then(notes => {
             setIsEndReached(notes.length === 0)
-            const newData: Data[] = notes.map(note => ({ id: shortid.generate(), isFloat: false, note }))
+            const newData: Data[] = notes.map(note => {
+              const noteType = JudgementNoteType(note)
+
+              const textContent = toReactNode(note.text ? note.text : note.reply?.text ? note.reply.text : '')
+              const renoteTextContent = toReactNode(note.renote?.text ? note.renote.text : '')
+
+              return { id: shortid.generate(), isFloat: false, note, textContent, renoteTextContent }
+            })
 
             if (isDataClear) setData([])
             handleDataUpdate(newData)
@@ -77,7 +76,14 @@ function Timeline() {
   )
 
   const renderItem = useCallback(({ item }: { item: Data }) => {
-    return <AppearNote appearNote={item.note} setIsOpenBottomSheet={setIsOpenBottomSheet} />
+    return (
+      <AppearNote
+        appearNote={item.note}
+        setIsOpenBottomSheet={setIsOpenBottomSheet}
+        textContent={item.textContent}
+        renoteTextContent={item.renoteTextContent}
+      />
+    )
   }, [])
 
   const doRefresh = () => {

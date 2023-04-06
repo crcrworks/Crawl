@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, Text } from 'native-base'
 
-function SettingScreen() {
+const SettingScreen = () => {
   return (
     <View>
       <Text>this is setting page</Text>

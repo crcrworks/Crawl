@@ -1,15 +1,13 @@
 import React, { useState, useRef, useEffect, createContext } from 'react'
-import { SafeAreaView } from 'react-native-safe-area-context'
 import { Text, Box, Center, Icon, View, VStack, useColorModeValue, Overlay, useTheme } from 'native-base'
+import { Defs, RadialGradient, Svg, Stop, Rect } from 'react-native-svg'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import { Feather, Ionicons, Entypo, FontAwesome } from '@expo/vector-icons'
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs'
 import { createMaterialTopTabNavigator, MaterialTopTabBar, MaterialTopTabBarProps } from '@react-navigation/material-top-tabs'
 import shortid from 'shortid'
-import { Defs, RadialGradient, Svg, Stop, Rect } from 'react-native-svg'
-import { BlurView } from 'expo-blur'
 
-import { useAtom } from 'jotai'
-import { OpenReactionScreenAtom } from '../atoms/atoms'
+import { BlurView } from 'expo-blur'
 
 import SearchScreen from '@/screens/main/search'
 import HomeScreen from '@/screens/main/home'
@@ -24,8 +22,7 @@ export type TopTabState = {
   number: number
 }
 
-function Main() {
-  const [openReactionScreen, setOpenReactionScreen] = useAtom(OpenReactionScreenAtom)
+const Main = () => {
   return (
     <View flex={1} backgroundColor={useColorModeValue('white.300', 'black.300')}>
       <NavigationBottomContainer initialRouteName="Home">

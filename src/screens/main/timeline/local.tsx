@@ -5,7 +5,7 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import Timeline from '@/components/timeline'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
-function LocalScreen() {
+const LocalScreen = () => {
   return (
     <View flex={1} _dark={{ bg: 'black.300' }} _light={{ bg: 'white.300' }}>
       <Timeline />

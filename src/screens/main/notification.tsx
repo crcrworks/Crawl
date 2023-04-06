@@ -3,12 +3,11 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 
 import AllScreen from './notification/all'
 import MentionsScreen from './notification/mentions'
-
 import { NavigationTopContainer } from '../../components/navigation/top-bar'
 
 const tab = createMaterialTopTabNavigator()
 
-function NotificationScreen({ route }: any) {
+const NotificationScreen = ({ route }: any) => {
   return (
     <NavigationTopContainer>
       <tab.Screen name="All" component={AllScreen} />

@@ -10,7 +10,7 @@ type Props = {
 
 const agoMessages = locales.ago
 
-function Time(props: Props) {
+const Time = (props: Props) => {
   const { fontSize, date } = props
 
   const relative = (() => {
