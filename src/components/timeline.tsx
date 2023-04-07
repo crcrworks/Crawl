@@ -10,10 +10,10 @@ import shortid from 'shortid'
 
 import AppearNote, { JudgementNoteType } from './timeline/note'
 import ReactionScreen from '@/components/timeline/reaction'
-import { toReactNode } from '@/backend/mfm-service'
+import { toReactNode } from '@/services/mfm-parse'
 
 import { apiGet } from '@/scripts/api'
-import { ConvertEmoji } from '@/backend/emoji-service'
+import { ConvertEmoji } from '@/services/emoji'
 import { stream } from '@/stream'
 import { localChannel } from '@/init'
 
@@ -139,27 +139,27 @@ const Timeline = () => {
   //     )
   //   }, [data])
 
-  const onViewableItemsChanged = useCallback(
-    ({ viewableItems }: { viewableItems: ViewToken[] }) => {
-      setData(prevData => {
-        return prevData.map((item: Data) => {
-          const isVisible = viewableItems.some(viewableItem => viewableItem.item === item)
-          return { ...item, isVisible }
-        })
-      })
-    },
-    [data]
-  )
+  // const onViewableItemsChanged = useCallback(
+  //   ({ viewableItems }: { viewableItems: ViewToken[] }) => {
+  //     setData(prevData => {
+  //       return prevData.map((item: Data) => {
+  //         const isVisible = viewableItems.some(viewableItem => viewableItem.item === item)
+  //         return { ...item, isVisible }
+  //       })
+  //     })
+  //   },
+  //   [data]
+  // )
 
   const renderItem = useCallback(({ item }: { item: Data }) => {
     return (
       <MotiView
+        from={{ opacity: 0, scale: 0.8, translateY: -50 }}
+        animate={{ opacity: 1, scale: 1, translateY: 0 }}
         transition={{
           type: 'spring',
           damping: 15
         }}
-        from={{ opacity: 0, scale: 0.8, translateY: -50 }}
-        animate={{ opacity: 1, scale: 1, translateY: 0 }}
       >
         <AppearNote
           appearNote={item.note}
@@ -179,7 +179,7 @@ const Timeline = () => {
         data={data}
         extraData={data.length}
         renderItem={renderItem}
-        removeClippedSubviews={true}
+        removeClippedSubviews={false}
         getItem={(item, index) => item[index]}
         getItemCount={item => item.length}
         // refreshing={isLoading}
@@ -190,7 +190,7 @@ const Timeline = () => {
         onScroll={handleScroll}
         // onEndReachedThreshold={0.1}
         // onEndReached={() => handleEndReached(false)}
-        onViewableItemsChanged={onViewableItemsChanged}
+        // onViewableItemsChanged={onViewableItemsChanged}
         viewabilityConfig={{
           itemVisiblePercentThreshold: 50
         }}

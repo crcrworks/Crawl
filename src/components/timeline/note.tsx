@@ -1,11 +1,12 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { TouchableOpacity } from 'react-native'
-import { View, Text, Center, Image, Avatar } from 'native-base'
+import { View, Text, Center, Image, Avatar, useColorMode, useColorModeValue } from 'native-base'
 import * as Haptics from 'expo-haptics'
 import * as mfm from 'mfm-js'
 import misskey from 'misskey-js'
 
 import Time from '../time'
+import shortid from 'shortid'
 
 export type NoteType = 'note' | 'renote' | 'quoteRenote' | 'unknown'
 
@@ -23,6 +24,13 @@ type AppearNoteProps = {
   setIsOpenBottomSheet: React.Dispatch<React.SetStateAction<boolean>>
 }
 
+/*
+
+ LOG  {":_effv85b1_@nijimiss.moe:": 2, ":_kawaii@misskey.art:": 1, ":aemoji_bell@.:": 1, ":ara_suteki@.:": 10, ":blobcatheartbongo@nijimiss.moe:": 4, ":eeyan@misskey.design:": 1, ":eeyan_2@.:": 1, ":igyo@.:": 4, ":kawaii@misskey.209.jp:": 1, ":kawaii@misskey.art:": 7, ":kawaiifes@.:": 120, ":kawaiifes@fedibird.com:": 3, ":kawaiii@.:": 11, ":kawaiimatsuri@misskey.design:": 1, ":kawaisugidaro@.:": 3, ":kawaisugiru@.:": 2, ":kawayoi@.:": 5, ":suki_heart@.:": 1, ":suteki2@.:": 2, ":tottemo_cute@.:": 2, "❤": 3, "👍": 24}
+
+ LOG  {":_effv85b1_@nijimiss.moe:": 2, ":_kawaii@misskey.art:": 1, ":aemoji_bell@.:": 1, ":ara_suteki@.:": 10, ":blobcatheartbongo@nijimiss.moe:": 4, ":eeyan@misskey.design:": 1, ":eeyan_2@.:": 1, ":igyo@.:": 4, ":kawaii@misskey.209.jp:": 1, ":kawaii@misskey.art:": 7, ":kawaiifes@.:": 119, ":kawaiifes@fedibird.com:": 3, ":kawaiii@.:": 11, ":kawaiimatsuri@misskey.design:": 1, ":kawaisugidaro@.:": 3, ":kawaisugiru@.:": 2, ":kawayoi@.:": 5, ":suki_heart@.:": 1, ":suteki2@.:": 2, ":tottemo_cute@.:": 2, "❤": 3, "👍": 24}
+
+*/
 const AppearNote = (props: AppearNoteProps) => {
   const { appearNote } = props
 
@@ -52,6 +60,7 @@ const Note = (props: AppearNoteProps) => {
         name: appearNote.user.name,
         username: appearNote.user.username
       }}
+      reactions={appearNote.reactions}
     >
       <MkImage files={appearNote.files} />
       <View flexDirection="column" alignItems="flex-start">
@@ -77,6 +86,7 @@ const QuoteRenote = (props: AppearNoteProps) => {
         name: appearNote.user.name,
         username: appearNote.user.username
       }}
+      reactions={appearNote.reactions}
     >
       <MkQuote
         createdAt={appearRenote.createdAt}
@@ -143,6 +153,7 @@ const Renote = (props: AppearNoteProps) => {
           name: appearRenote.user.name,
           username: appearRenote.user.username
         }}
+        reactions={appearRenote.reactions}
       >
         <MkImage files={appearRenote.files} />
         <MkMessage textContent={renoteTextContent} />
@@ -151,10 +162,6 @@ const Renote = (props: AppearNoteProps) => {
   )
 }
 
-//以下パーツ
-
-//ヘッダー
-//アイコンや名前、投稿時間などが含まれる。
 type MkHeader = {
   setIsOpenBottomSheet: React.Dispatch<React.SetStateAction<boolean>>
   noteId: string
@@ -165,10 +172,11 @@ type MkHeader = {
     name: string
     username: string
   }
+  reactions: Record<string, number>
 }
 
 const MkHeader = (props: MkHeader) => {
-  const { setIsOpenBottomSheet, noteId, children, createdAt, avatarUrl, user } = props
+  const { setIsOpenBottomSheet, noteId, children, createdAt, avatarUrl, user, reactions } = props
 
   return (
     <TouchableOpacity
@@ -202,21 +210,59 @@ const MkHeader = (props: MkHeader) => {
               {createdAt && <Time fontSize={12} date={createdAt} />}
             </View>
           </View>
-
           <View flexDirection="column">{children}</View>
+          <MkReaction id={noteId} reactions={reactions} />
         </View>
       </View>
     </TouchableOpacity>
   )
 }
 
-//メッセージ
-//MfmDONをReactNodeに変換したものを表示
-type MkMessage = {
+type MkReactionProps = {
+  id: string
+  reactions: Record<string, number>
+}
+
+const MkReaction = (props: MkReactionProps) => {
+  const { id, reactions } = props
+
+  const reactionData: [string, number][] = Object.entries(reactions)
+
+  return (
+    <View flexDirection="row" flexWrap="wrap">
+      {reactionData.map(item => {
+        return (
+          <View key={id}>
+            <TouchableOpacity>
+              <View
+                flexDirection="row"
+                mt={1}
+                mx="2px"
+                px={2}
+                py={1}
+                bg={'transparent'}
+                borderColor={'white.0'}
+                borderWidth={1}
+                borderRadius={100}
+                fontSize={10}
+              >
+                <Text mx={1}>{item[0]}</Text>
+                <View w="1px" h="100%" mx={1} bg="white.0" borderRadius={100}></View>
+                <Text mx={1}>{item[1]}</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        )
+      })}
+    </View>
+  )
+}
+
+type MkMessageProps = {
   textContent: any
 }
 
-const MkMessage = (props: MkMessage) => {
+const MkMessage = (props: MkMessageProps) => {
   const { textContent } = props
 
   return (
@@ -230,13 +276,11 @@ const MkMessage = (props: MkMessage) => {
   )
 }
 
-//画像/動画
-//音声ファイルなどは含まれない。
-type MkImage = {
+type MkImageProps = {
   files: misskey.entities.DriveFile[]
 }
 
-const MkImage = (props: MkImage) => {
+const MkImage = (props: MkImageProps) => {
   const { files } = props
 
   if (!files.some(file => file.type === 'image/jpeg' || file.type === 'image/png')) return <View />
@@ -265,8 +309,7 @@ const MkImage = (props: MkImage) => {
   )
 }
 
-//引用リツイートの内容
-type MkQuote = {
+type MkQuoteProps = {
   createdAt: string
   avatarUrl: string
   user: {
@@ -276,7 +319,7 @@ type MkQuote = {
   text: string
 }
 
-const MkQuote = (props: MkQuote) => {
+const MkQuote = (props: MkQuoteProps) => {
   const { createdAt, avatarUrl, user, text } = props
 
   return (

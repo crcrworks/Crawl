@@ -7,17 +7,22 @@ import shortid from 'shortid'
 
 export const toReactNode = (inputText: string) => {
   return mfm.parse(inputText).map((node: mfm.MfmNode) => {
-    return MfmNode({ node, key: shortid.generate() })
+    return MfmNode({ node })
   })
 }
 
-export const MfmNode = ({ node, key }: { node: mfm.MfmNode; key: string }) => {
+type MfmNodeProps = {
+  node: mfm.MfmNode
+}
+
+export const MfmNode = (props: MfmNodeProps) => {
+  const { node } = props
   if (!node) return null
 
   switch (node.type) {
     case 'bold':
       return (
-        <Text key={key} fontWeight="bold" color={'white.300'}>
+        <Text key={shortid.generate()} fontWeight="bold" color={'white.300'}>
           {node.children.map(child => (
             <MfmNode key={shortid.generate()} node={child} />
           ))}
@@ -25,7 +30,7 @@ export const MfmNode = ({ node, key }: { node: mfm.MfmNode; key: string }) => {
       )
     case 'small':
       return (
-        <Text key={key} fontSize={12} color={'white.300'}>
+        <Text key={shortid.generate()} fontSize={12} color={'white.300'}>
           {node.children.map(child => (
             <MfmNode key={shortid.generate()} node={child} />
           ))}
@@ -33,7 +38,7 @@ export const MfmNode = ({ node, key }: { node: mfm.MfmNode; key: string }) => {
       )
     case 'strike':
       return (
-        <Text key={key} textDecorationLine="line-through" color={'white.300'}>
+        <Text key={shortid.generate()} textDecorationLine="line-through" color={'white.300'}>
           {node.children.map(child => (
             <MfmNode key={shortid.generate()} node={child} />
           ))}
@@ -41,7 +46,7 @@ export const MfmNode = ({ node, key }: { node: mfm.MfmNode; key: string }) => {
       )
     case 'italic':
       return (
-        <Text key={key} fontStyle="italic" color={'white.300'}>
+        <Text key={shortid.generate()} fontStyle="italic" color={'white.300'}>
           {node.children.map(child => (
             <MfmNode key={shortid.generate()} node={child} />
           ))}
@@ -49,7 +54,7 @@ export const MfmNode = ({ node, key }: { node: mfm.MfmNode; key: string }) => {
       )
     case 'fn':
       return (
-        <Text key={key} color={'white.300'}>
+        <Text key={shortid.generate()} color={'white.300'}>
           {node.children.map(child => (
             <MfmNode key={shortid.generate()} node={child} />
           ))}
@@ -59,35 +64,35 @@ export const MfmNode = ({ node, key }: { node: mfm.MfmNode; key: string }) => {
       return <Text color={'white.300'}>{node.props.code}</Text>
     case 'center':
       return (
-        <Text key={key} textAlign="center" color={'white.300'}>
+        <Text key={shortid.generate()} textAlign="center" color={'white.300'}>
           {node.children.map(child => (
             <MfmNode key={shortid.generate()} node={child} />
           ))}
         </Text>
       )
     case 'emojiCode':
-      return <Text key={key} color={'yellow.300'}>{`:${node.props.name}:`}</Text>
+      return <Text key={shortid.generate()} color={'yellow.300'}>{`:${node.props.name}:`}</Text>
     case 'unicodeEmoji':
       return (
-        <Text key={key} color={'yellow.300'}>
+        <Text key={shortid.generate()} color={'yellow.300'}>
           {node.props.emoji}
         </Text>
       )
     case 'hashtag':
       return (
-        <Text key={key} color="blue.300" onPress={() => console.log(`Pressed ${node.props.hashtag}`)}>
+        <Text key={shortid.generate()} color="blue.300" onPress={() => console.log(`Pressed ${node.props.hashtag}`)}>
           {`#${node.props.hashtag}`}
         </Text>
       )
     case 'inlineCode':
-      return <Text key={key} /*fontFamily="mono" */>{node.props.code}</Text>
+      return <Text key={shortid.generate()} /*fontFamily="mono" */>{node.props.code}</Text>
     case 'mathInline':
-      return <Text key={key} /*fontFamily="mono" */>{node.props.formula}</Text>
+      return <Text key={shortid.generate()} /*fontFamily="mono" */>{node.props.formula}</Text>
     case 'mathBlock':
-      return <Text key={key} /*fontFamily="mono" */>{node.props.formula}</Text>
+      return <Text key={shortid.generate()} /*fontFamily="mono" */>{node.props.formula}</Text>
     case 'link':
       return (
-        <Text key={key} color="blue.300" onPress={() => console.log(`Pressed ${node.props.url}`)}>
+        <Text key={shortid.generate()} color="blue.300" onPress={() => console.log(`Pressed ${node.props.url}`)}>
           {node.children.map(child => (
             <MfmNode key={shortid.generate()} node={child} />
           ))}
@@ -95,13 +100,13 @@ export const MfmNode = ({ node, key }: { node: mfm.MfmNode; key: string }) => {
       )
     case 'mention':
       return (
-        <Text key={key} color="blue.300" onPress={() => console.log(`Pressed ${node.props.acct}`)}>
+        <Text key={shortid.generate()} color="blue.300" onPress={() => console.log(`Pressed ${node.props.acct}`)}>
           {node.props.acct}
         </Text>
       )
     case 'quote':
       return (
-        <Text key={key} fontStyle="italic" color="white.300">
+        <Text key={shortid.generate()} fontStyle="italic" color="white.300">
           {node.children.map(child => (
             <MfmNode key={shortid.generate()} node={child} />
           ))}
@@ -109,7 +114,7 @@ export const MfmNode = ({ node, key }: { node: mfm.MfmNode; key: string }) => {
       )
     case 'text':
       return (
-        <Text key={key}>
+        <Text key={shortid.generate()}>
           {node.props.text.split(/\r\n|\r|\n/).map((text, index) => (
             <Text key={shortid.generate()} fontSize={17} color="white.300">
               {text}
@@ -119,19 +124,19 @@ export const MfmNode = ({ node, key }: { node: mfm.MfmNode; key: string }) => {
       )
     case 'url':
       return (
-        <Text key={key} color="blue.300" onPress={() => Linking.openURL(node.props.url)}>
+        <Text key={shortid.generate()} color="blue.300" onPress={() => Linking.openURL(node.props.url)}>
           {node.props.url}
         </Text>
       )
     case 'search':
       return (
-        <Text key={key} color="blue.300" onPress={() => Linking.openURL(`https://www.google.com/search?q=${node.props.query}`)}>
+        <Text key={shortid.generate()} color="blue.300" onPress={() => Linking.openURL(`https://www.google.com/search?q=${node.props.query}`)}>
           {node.props.content}
         </Text>
       )
     case 'plain':
       return (
-        <Text key={key} color="white.300">
+        <Text key={shortid.generate()} color="white.300">
           {node.children.map(child => (
             <MfmNode key={shortid.generate()} node={child} />
           ))}
@@ -139,6 +144,6 @@ export const MfmNode = ({ node, key }: { node: mfm.MfmNode; key: string }) => {
       )
 
     default:
-      return <View key={key} />
+      return <View key={shortid.generate()} />
   }
 }
