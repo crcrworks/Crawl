@@ -7,102 +7,67 @@ import { MotiView } from 'moti'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import BottomSheet from '@gorhom/bottom-sheet'
 import shortid from 'shortid'
+import { useAtom } from 'jotai'
 
-import AppearNote, { JudgementNoteType } from './timeline/note'
+import AppearNote from './timeline/note'
 import ReactionScreen from '@/components/timeline/reaction'
-import { toReactNode } from '@/services/mfm-parse'
+import { toReactNode } from '@/core/services/MfmParse'
 
 import { apiGet } from '@/scripts/api'
-import { ConvertEmoji } from '@/services/emoji'
-import { stream } from '@/stream'
-import { localChannel } from '@/init'
-
-const TIMELINE_NOTE_MAX_COUNT = 30
-
-type Data = {
-  id: string
-  note: misskey.entities.Note
-  textContent: any
-  renoteTextContent: any
-  isVisible: boolean
-}
-
-// const Stack = createStackNavigator()
+import { ConvertEmoji } from '@/core/services/EmojiParse'
+import { stream } from '@/connection'
+import { channel } from '@/connection'
+import { Note, NoteUnion, RenoteUnion } from 'types/Note'
+import { timelineAtom } from '@/atoms'
+import { sendUpdateRequest } from '@/core/services/notes/update'
 
 const Timeline = () => {
-  useEffect(() => {
-    setData([])
-    // handleEndReached(false)
-    stream.on('noteUpdated', noteData => {
-      console.log(noteData)
-    })
-
-    localChannel.on('note', note => {
-      if (scrollY.current > 30) return
-      const textContent = toReactNode(note.text ? note.text : note.reply?.text ? note.reply.text : '')
-      const renoteTextContent = toReactNode(note.renote?.text ? note.renote.text : '')
-      handleDataUpdate([{ id: shortid.generate(), note, textContent, renoteTextContent, isVisible: false }])
-    })
-  }, [])
-
-  const [data, setData] = useState<Data[]>([])
+  const [notes, setNotes] = useAtom(timelineAtom.note)
+  const [shouldGetNote, setShouldGetNote] = useAtom(timelineAtom.shoudGetNote)
   const [isLoading, setIsLoading] = useState(false)
   const [isEndReached, setIsEndReached] = useState(false)
   const [isOpenBottomSheet, setIsOpenBottomSheet] = useState(false)
 
-  const scrollY = useRef(0)
+  useEffect(() => {
+    setNotes([])
+    // handleEndReached(false)
+  }, [])
 
-  const handleDataUpdate = useCallback(
-    (newData: Data[]) => {
-      LayoutAnimation.configureNext({
-        duration: 500,
-        update: { type: 'spring', springDamping: 1 }
-      })
-      setData(prevData => {
-        if (prevData.length > TIMELINE_NOTE_MAX_COUNT) {
-          prevData = prevData.slice(0, TIMELINE_NOTE_MAX_COUNT)
-        }
-        return [...newData, ...prevData]
-      })
-    },
-    [setData]
-  )
+  // const handleEndReached = useCallback(
+  //   async (isDataClear: boolean) => {
+  //     if (!isEndReached && !isLoading) {
+  //       setIsLoading(true)
 
-  const handleEndReached = useCallback(
-    async (isDataClear: boolean) => {
-      if (!isEndReached && !isLoading) {
-        setIsLoading(true)
+  //       await apiGet('notes/local-timeline', { limit: 50 })
+  //         .then(notes => {
+  //           setIsEndReached(notes.length === 0)
+  //           const newData: Data[] = notes.map(note => {
+  //             const noteType = JudgementNoteType(note)
 
-        await apiGet('notes/local-timeline', { limit: 50 })
-          .then(notes => {
-            setIsEndReached(notes.length === 0)
-            const newData: Data[] = notes.map(note => {
-              const noteType = JudgementNoteType(note)
+  //             const textContent = toReactNode(note.text ? note.text : note.reply?.text ? note.reply.text : '')
+  //             const renoteTextContent = toReactNode(note.renote?.text ? note.renote.text : '')
 
-              const textContent = toReactNode(note.text ? note.text : note.reply?.text ? note.reply.text : '')
-              const renoteTextContent = toReactNode(note.renote?.text ? note.renote.text : '')
+  //             return { id: shortid.generate(), note: { type: 'note', ...note,  }, textContent, renoteTextContent, isVisible: false }
+  //           })
 
-              return { id: shortid.generate(), note, textContent, renoteTextContent, isVisible: false }
-            })
+  //           if (isDataClear) setData([])
+  //           handleDataUpdate(newData)
+  //         })
+  //         .catch(error => {
+  //           console.log(error)
+  //         })
+  //         .finally(() => {
+  //           setIsLoading(false)
+  //         })
+  //     }
+  //   },
+  //   [data, isLoading, isEndReached, handleDataUpdate]
+  // )
 
-            if (isDataClear) setData([])
-            handleDataUpdate(newData)
-          })
-          .catch(error => {
-            console.log(error)
-          })
-          .finally(() => {
-            setIsLoading(false)
-          })
-      }
-    },
-    [data, isLoading, isEndReached, handleDataUpdate]
-  )
-
-  const doRefresh = () => {
-    setIsEndReached(false)
-    handleEndReached(true)
-  }
+  // const doRefresh = () => {
+  //   setIsEndReached(false)
+  //   handleEndReached(true)
+  // }
 
   const ListHeader = useCallback(() => {
     return (
@@ -130,28 +95,28 @@ const Timeline = () => {
 
   const handleScroll = (event: any) => {
     const { contentOffset } = event.nativeEvent
-    scrollY.current = contentOffset.y
+    setShouldGetNote(contentOffset.y < 10 ? true : false)
   }
 
-  //   const VirtualizedListWrapper = useCallback(() => {
-  //     return (
+  const alreadySent = useRef<string[]>(null)
+  const onViewableItemsChanged = useCallback(({ viewableItems, changed }: { viewableItems: ViewToken[]; changed: ViewToken[] }) => {
+    changed.map(item => {
+      const data: Note = item.item
+      const type = item.isViewable ? 'subNote' : 'unsubNote'
 
-  //     )
-  //   }, [data])
+      if (!alreadySent.current?.includes(data.note.id)) {
+        sendUpdateRequest(type, data.note.id)
+      }
 
-  // const onViewableItemsChanged = useCallback(
-  //   ({ viewableItems }: { viewableItems: ViewToken[] }) => {
-  //     setData(prevData => {
-  //       return prevData.map((item: Data) => {
-  //         const isVisible = viewableItems.some(viewableItem => viewableItem.item === item)
-  //         return { ...item, isVisible }
-  //       })
-  //     })
-  //   },
-  //   [data]
-  // )
+      if (item.isViewable) alreadySent.current?.push(data.note.id)
+      else
+        alreadySent.current?.filter(id => {
+          id !== data.note.id
+        })
+    })
+  }, [])
 
-  const renderItem = useCallback(({ item }: { item: Data }) => {
+  const renderItem = useCallback(({ item }: { item: Note }) => {
     return (
       <MotiView
         from={{ opacity: 0, scale: 0.8, translateY: -50 }}
@@ -161,12 +126,7 @@ const Timeline = () => {
           damping: 15
         }}
       >
-        <AppearNote
-          appearNote={item.note}
-          setIsOpenBottomSheet={setIsOpenBottomSheet}
-          textContent={item.textContent}
-          renoteTextContent={item.renoteTextContent}
-        />
+        <AppearNote appearNote={item.note} setIsOpenBottomSheet={setIsOpenBottomSheet} />
       </MotiView>
     )
   }, [])
@@ -176,8 +136,8 @@ const Timeline = () => {
       {isOpenBottomSheet && <ReactionScreen isOpenBottomSheet={isOpenBottomSheet} setIsOpenBottomSheet={setIsOpenBottomSheet} />}
       <VirtualizedList
         keyExtractor={item => item.id}
-        data={data}
-        extraData={data.length}
+        data={notes}
+        extraData={notes.length}
         renderItem={renderItem}
         removeClippedSubviews={false}
         getItem={(item, index) => item[index]}
@@ -190,7 +150,7 @@ const Timeline = () => {
         onScroll={handleScroll}
         // onEndReachedThreshold={0.1}
         // onEndReached={() => handleEndReached(false)}
-        // onViewableItemsChanged={onViewableItemsChanged}
+        onViewableItemsChanged={onViewableItemsChanged}
         viewabilityConfig={{
           itemVisiblePercentThreshold: 50
         }}

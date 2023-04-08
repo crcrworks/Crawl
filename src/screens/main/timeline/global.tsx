@@ -3,10 +3,10 @@ import { Center, Box, Text, useColorModeValue, Image, View } from 'native-base'
 import Lottie from 'lottie-react-native'
 import { Animated, Easing } from 'react-native'
 import * as mfm from 'mfm-js'
-import { toReactNode } from '@/services/mfm-service'
+import { toReactNode } from '@/core/services/MfmParse'
 import shortid from 'shortid'
 
-import { ConvertEmoji } from '@/services/emoji'
+import { ConvertEmoji } from '@/core/services/EmojiParse'
 import { ReactNode } from 'react'
 
 const GlobalScreen = () => {
