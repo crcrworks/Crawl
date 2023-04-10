@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState, useRef, useCallback, createRef } from 'react'
+import React, { useEffect, useMemo, useState, useRef, useCallback, createRef, ReactNode } from 'react'
 import { LayoutAnimation, TouchableOpacity, Animated, Easing } from 'react-native'
 import { View, Text, Center, Image, Avatar, useColorMode, useColorModeValue } from 'native-base'
 import * as Haptics from 'expo-haptics'
@@ -13,7 +13,8 @@ import { Note, NoteUnion, RenoteUnion } from '@/types/Note'
 import { MotiView, useAnimationState } from 'moti'
 import { opacify } from 'polished'
 import { apiGet } from '@/scripts/api'
-import { addReactionToNote } from '@/models/note/fetch'
+import parseToReactNode from '@/models/parser/mfmNode-to-reactNode'
+// import { addReactionToNote } from '@/models/note/fetch'
 
 type AppearNoteProps = {
   appearNote: Note
@@ -23,19 +24,27 @@ type AppearNoteProps = {
 const AppearNote = (props: AppearNoteProps) => {
   const { appearNote } = props
 
-  if (appearNote.createdAt === undefined) appearNote.createdAt = ''
-  if (appearNote.renote && appearNote.renote.createdAt === undefined) appearNote.renote.createdAt = ''
-
   const AppearNote = useMemo(() => {
-    if (appearNote.type === 'note') return <MkNote {...props} />
-    else return <MkRenote {...props} />
-  }, [appearNote, appearNote.reactions])
-
+    switch (appearNote.type) {
+      case 'note':
+        return <MkNote {...props} />
+      case 'renote':
+        return <MkRenote {...props} />
+      default:
+        return <MkNote {...props} />
+    }
+  }, [appearNote])
   return AppearNote
+
+  // const AppearNote = useMemo(() => {
+  //   if (appearNote.type === 'note') return <MkNote {...props} />
+  //   else return <MkRenote {...props} />
+  // }, [appearNote, appearNote.reactions])
 }
 
 const MkNote = (props: AppearNoteProps) => {
   const { appearNote, setIsOpenBottomSheet } = props
+  if (appearNote.type !== 'note') return null
   const appearRenote = appearNote.renote
 
   return (
@@ -58,54 +67,54 @@ const MkNote = (props: AppearNoteProps) => {
             name: appearRenote.user.name,
             username: appearRenote.user.username
           }}
-          text={appearRenote.text!}
+          text={parseToReactNode(appearRenote.text!)}
         />
       )}
 
       <MkImage files={appearNote.files} />
       <View flexDirection="column" alignItems="flex-start">
         <View bg="black.200" borderTopLeftRadius={5} borderTopRightRadius={20} borderBottomRightRadius={20} borderBottomLeftRadius={20}>
-          <MkMessage textContent={appearNote.text} />
+          {appearNote.text && <MkMessage text={parseToReactNode(appearNote.text)} />}
         </View>
       </View>
     </MkHeader>
   )
 }
 
-const QuoteRenote = (props: AppearNoteProps) => {
-  const { appearNote, setIsOpenBottomSheet } = props
-  const appearRenote = appearNote.renote!
+// const QuoteRenote = (props: AppearNoteProps) => {
+//   const { appearNote, setIsOpenBottomSheet } = props
+//   const appearRenote = appearNote.renote!
 
-  return (
-    <MkHeader
-      setIsOpenBottomSheet={setIsOpenBottomSheet}
-      noteId={appearNote.id}
-      createdAt={appearNote.createdAt}
-      avatarUrl={appearNote.user.avatarUrl}
-      user={{
-        name: appearNote.user.name,
-        username: appearNote.user.username
-      }}
-      reactions={appearNote.reactions}
-    >
-      <MkQuote
-        createdAt={appearRenote.createdAt}
-        avatarUrl={appearRenote.user.avatarUrl}
-        user={{
-          name: appearRenote.user.name,
-          username: appearRenote.user.username
-        }}
-        text={appearRenote.text!}
-      />
-      <MkMessage textContent={appearNote.text} />
-    </MkHeader>
-  )
-}
+//   return (
+//     <MkHeader
+//       setIsOpenBottomSheet={setIsOpenBottomSheet}
+//       noteId={appearNote.id}
+//       createdAt={appearNote.createdAt}
+//       avatarUrl={appearNote.user.avatarUrl}
+//       user={{
+//         name: appearNote.user.name,
+//         username: appearNote.user.username
+//       }}
+//       reactions={appearNote.reactions}
+//     >
+//       <MkQuote
+//         createdAt={appearRenote.createdAt}
+//         avatarUrl={appearRenote.user.avatarUrl}
+//         user={{
+//           name: appearRenote.user.name,
+//           username: appearRenote.user.username
+//         }}
+//         text={appearRenote.text!}
+//       />
+//       <MkMessage textContent={appearNote.text} />
+//     </MkHeader>
+//   )
+// }
 
 const MkRenote = (props: AppearNoteProps) => {
   const { appearNote, setIsOpenBottomSheet } = props
 
-  if (appearNote.type !== 'renote' || !appearNote.user.username) return <View />
+  if (appearNote.type !== 'renote' || appearNote.user.username === undefined) return null
 
   return (
     <View flexDirection="column" my={3}>
@@ -120,15 +129,15 @@ const MkRenote = (props: AppearNoteProps) => {
           /> */}
           <Center mx={1}>
             <Text color="white.300" bold={true}>
-              {appearNote.renoteInfo.user.name}
+              {appearNote.renoterInfo.user.name}
             </Text>
           </Center>
           <Center mx={1}>
-            <Text color="white.1">{`@${appearNote.renoteInfo.user.username}`}</Text>
+            <Text color="white.1">{`@${appearNote.renoterInfo.user.username}`}</Text>
           </Center>
         </View>
         <Center ml={1}>
-          <Time fontSize={12} date={appearNote.renoteInfo.createdAt} />
+          <Time fontSize={12} date={appearNote.renoterInfo.createdAt} />
         </Center>
       </View>
       <View
@@ -156,7 +165,7 @@ const MkRenote = (props: AppearNoteProps) => {
         reactions={appearNote.reactions}
       >
         <MkImage files={appearNote.files} />
-        <MkMessage textContent={appearNote.text} />
+        {appearNote.text && <MkMessage text={parseToReactNode(appearNote.text)} />}
       </MkHeader>
     </View>
   )
@@ -172,7 +181,7 @@ type MkHeader = {
     name: string
     username: string
   }
-  reactions: Note['note']['reactions']
+  reactions: Note['reactions']
 }
 
 const MkHeader = (props: MkHeader) => {
@@ -239,7 +248,7 @@ const MkHeader = (props: MkHeader) => {
 
 type MkReactionProps = {
   noteId: string
-  reactions: Note['note']['reactions']
+  reactions: Note['reactions']
 }
 
 const MkReaction = (props: MkReactionProps) => {
@@ -268,7 +277,7 @@ const MkReaction = (props: MkReactionProps) => {
           duration: 300,
           easing: Easing.elastic(2)
         }).start()
-        await addReactionToNote(noteId, emoji)
+        // await addReactionToNote(noteId, emoji)
 
         break
       case State.END:
@@ -347,17 +356,17 @@ const MkReaction = (props: MkReactionProps) => {
 }
 
 type MkMessageProps = {
-  textContent: any
+  text: ReactNode[]
 }
 
 const MkMessage = (props: MkMessageProps) => {
-  const { textContent } = props
+  const { text } = props
 
   return (
     <View flexDirection="column" alignItems="flex-start">
       <View px={5} py={4} bg="black.200" borderTopLeftRadius={5} borderTopRightRadius={20} borderBottomRightRadius={20} borderBottomLeftRadius={20}>
         <View flexDirection="row" flexWrap="wrap">
-          {textContent}
+          {text}
         </View>
       </View>
     </View>
@@ -371,7 +380,7 @@ type MkImageProps = {
 const MkImage = (props: MkImageProps) => {
   const { files } = props
 
-  if (!files.some(file => file.type === 'image/jpeg' || file.type === 'image/png')) return <View />
+  if (!files.some(file => file.type === 'image/jpeg' || file.type === 'image/png')) return null
 
   return (
     <View bg="black.200" mb={1} p={2} borderTopRadius={20} borderBottomLeftRadius={5} borderBottomRightRadius={20}>
@@ -404,7 +413,7 @@ type MkQuoteProps = {
     name: string
     username: string
   }
-  text: string
+  text: ReactNode[]
 }
 
 const MkQuote = (props: MkQuoteProps) => {
@@ -458,7 +467,7 @@ const MkQuote = (props: MkQuoteProps) => {
             borderBottomRightRadius={10}
             borderBottomLeftRadius={10}
           >
-            <Text fontSize={15}>{text}</Text>
+            <View>{text}</View>
           </View>
         </View>
       </View>

@@ -10,7 +10,7 @@ import store from '@/redux/store'
 const App = () => {
   useEffect(() => {
     init()
-  })
+  }, [])
   LogBox.ignoreLogs(['Sending'])
   return (
     <AppContainer>

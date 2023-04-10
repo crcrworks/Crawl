@@ -7,9 +7,12 @@ type NoteBase = {
   id: string
   createdAt: string
   text: string | null
-  contentWarning: string | null
+  contentWarning?: string | null
   user: User
   userId: User
+  // reply?: Note
+  // replyId?: Note['id']
+
   files: DriveFile[]
   fileIds: DriveFile['id'][]
   visibility: 'public' | 'home' | 'followers' | 'specified'
@@ -46,11 +49,13 @@ type Reactions = {
 
 interface NoteUnion extends NoteBase {
   type: 'note'
+  renote?: Note
+  renoteId?: Note['id']
 }
 
 interface RenoteUnion extends NoteBase {
   type: 'renote'
-  renoteInfo: Omit<NoteBase, 'reactions'>
+  renoterInfo: Omit<NoteBase, 'reactions'>
 }
 
 export type Note = NoteUnion | RenoteUnion

@@ -11,27 +11,45 @@ import { useAtom } from 'jotai'
 
 import AppearNote from './timeline/note'
 import ReactionScreen from '@/components/timeline/reaction'
-import { toReactNode } from '@/services/MfmParse'
 
 import { apiGet } from '@/scripts/api'
-import { ConvertEmoji } from '@/services/EmojiParse'
+import parseEmojiCodeToEmoji from '@/models/parser/emojiCode-to-emoji'
 import { stream } from '@/core/connection'
 import { channel } from '@/core/connection'
 import { Note, NoteUnion, RenoteUnion } from '@/types/Note'
 import { timelineAtom } from '@/atoms'
-import { sendUpdateRequest } from '@/models/note/update'
+// import { sendUpdateRequest } from '@/models/note/update'
+import { useDispatch, useSelector } from 'react-redux'
+import { addNote } from '@/redux/reducer/timeline'
+import { RootState, RootDispatch } from '@/redux/store'
+import parseToAppNote from '@/models/parser/misskeyType-to-appType'
+const SHOULD_GET_NOTE_AMOUNT = 10
 
 const Timeline = () => {
-  const [notes, setNotes] = useAtom(timelineAtom.note)
-  const [shouldGetNote, setShouldGetNote] = useAtom(timelineAtom.shoudGetNote)
+  const dispatch = useDispatch()
+  const { notes } = useSelector((state: RootState) => state.timeline)
+
+  const [shouldGetNote, setShouldGetNote] = useState(true)
   const [isLoading, setIsLoading] = useState(false)
   const [isEndReached, setIsEndReached] = useState(false)
   const [isOpenBottomSheet, setIsOpenBottomSheet] = useState(false)
 
   useEffect(() => {
-    setNotes([])
-    // handleEndReached(false)
-  }, [])
+    channel.on('note', note => {
+      const parsedNote = parseToAppNote(note)
+      if (!parsedNote) return
+      if (shouldGetNote) dispatch(addNote(parsedNote))
+    })
+
+    return () => {
+      channel.off('note')
+    }
+  }, [shouldGetNote])
+
+  // useEffect(() => {
+  //   setNotes([])
+  //   // handleEndReached(false)
+  // }, [])
 
   // const handleEndReached = useCallback(
   //   async (isDataClear: boolean) => {
@@ -95,28 +113,28 @@ const Timeline = () => {
 
   const handleScroll = (event: any) => {
     const { contentOffset } = event.nativeEvent
-    setShouldGetNote(contentOffset.y < 10 ? true : false)
+
+    setShouldGetNote(contentOffset.y < 20)
   }
 
   const alreadySent = useRef<string[]>(null)
   const onViewableItemsChanged = useCallback(({ viewableItems, changed }: { viewableItems: ViewToken[]; changed: ViewToken[] }) => {
-    changed.map(item => {
-      const data: Note = item.item
-      const type = item.isViewable ? 'subNote' : 'unsubNote'
-
-      if (!alreadySent.current?.includes(data.note.id)) {
-        sendUpdateRequest(type, data.note.id)
-      }
-
-      if (item.isViewable) alreadySent.current?.push(data.note.id)
-      else
-        alreadySent.current?.filter(id => {
-          id !== data.note.id
-        })
-    })
+    // changed.map(item => {
+    //   const data: Note = item.item
+    //   const type = item.isViewable ? 'subNote' : 'unsubNote'
+    //   if (!alreadySent.current?.includes(data.note.id)) {
+    //     sendUpdateRequest(type, data.note.id)
+    //   }
+    //   if (item.isViewable) alreadySent.current?.push(data.note.id)
+    //   else
+    //     alreadySent.current?.filter(id => {
+    //       id !== data.note.id
+    //     })
+    // })
   }, [])
 
   const renderItem = useCallback(({ item }: { item: Note }) => {
+    const note = item
     return (
       <MotiView
         from={{ opacity: 0, scale: 0.8, translateY: -50 }}
@@ -126,7 +144,7 @@ const Timeline = () => {
           damping: 15
         }}
       >
-        <AppearNote appearNote={item.note} setIsOpenBottomSheet={setIsOpenBottomSheet} />
+        <AppearNote appearNote={note} setIsOpenBottomSheet={setIsOpenBottomSheet} />
       </MotiView>
     )
   }, [])
@@ -135,13 +153,13 @@ const Timeline = () => {
     <View flex={1}>
       {isOpenBottomSheet && <ReactionScreen isOpenBottomSheet={isOpenBottomSheet} setIsOpenBottomSheet={setIsOpenBottomSheet} />}
       <VirtualizedList
-        keyExtractor={item => item.id}
+        keyExtractor={note => (note.type === 'note' ? note.id : note.renoterInfo.id)}
         data={notes}
         extraData={notes.length}
         renderItem={renderItem}
         removeClippedSubviews={false}
-        getItem={(item, index) => item[index]}
-        getItemCount={item => item.length}
+        getItem={(note, index) => note[index]}
+        getItemCount={note => note.length}
         // refreshing={isLoading}
         // onRefresh={doRefresh}
         // refreshControl={<RefreshControl progressViewOffset={120} refreshing={isLoading} onRefresh={doRefresh} tintColor={'white'} size={10} />}

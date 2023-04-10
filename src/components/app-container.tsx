@@ -4,7 +4,6 @@ import { NavigationContainer } from '@react-navigation/native'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 
 import theme from '@/core/theme'
-import ServicesConteiner from '@/models/note/services-container'
 
 type AppContainerProps = {
   children: React.ReactNode
@@ -14,10 +13,7 @@ const AppContainer = (props: AppContainerProps) => {
   return (
     <SafeAreaProvider>
       <NavigationContainer>
-        <NativeBaseProvider theme={theme}>
-          <ServicesConteiner />
-          {props.children}
-        </NativeBaseProvider>
+        <NativeBaseProvider theme={theme}>{props.children}</NativeBaseProvider>
       </NavigationContainer>
     </SafeAreaProvider>
   )

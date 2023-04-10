@@ -7,22 +7,17 @@ import { timelineAtom } from '@/atoms'
 import { stream, channel } from '@/core/connection'
 import { apiGet } from '@/scripts/api'
 import { Note, NoteUnion, RenoteUnion } from '@/types/Note'
-import { toReactNode } from '../../services/MfmParse'
+
 import { LayoutAnimation } from 'react-native'
 import { useSharedValue } from 'react-native-reanimated'
-import parser from '../parser'
-
-import { Parser } from '../parser'
 
 const TIMELINE_NOTE_MAX_COUNT = 30
 
-channel.on('note', note => {
-  emit(parser.misskeyNoteToAppNote(note))
-})
+// channel.on('note', note => {
+//   emit(parser.misskeyNoteToAppNote(note))
+// })
 
-const emit = (note: Note) => {
-  console.log(note)
-}
+// const emit = (note: Note) => {}
 
 // const FetchNotes = () => {
 //   const [notes, setNotes] = useAtom(timelineAtom.note)

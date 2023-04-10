@@ -1,10 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit'
-import noteReducer from './reducer/note'
+import timelineReducer from './reducer/timeline'
 
 const store = configureStore({
   reducer: {
-    note: noteReducer
+    timeline: timelineReducer
   }
 })
+
+export type RootState = ReturnType<typeof store.getState>
+export type RootDispatch = typeof store.dispatch
 
 export default store
