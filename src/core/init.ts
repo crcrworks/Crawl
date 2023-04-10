@@ -1,4 +1,4 @@
 import * as misskey from 'misskey-js'
-import { stream } from '@/connection'
+import { stream } from '@/core/connection'
 
 export const init = () => {}

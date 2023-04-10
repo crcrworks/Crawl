@@ -9,13 +9,14 @@ import { withTiming, useAnimatedGestureHandler, useSharedValue, useAnimatedStyle
 
 import Time from '../time'
 import shortid from 'shortid'
-import { Note, NoteUnion, RenoteUnion } from '@/../types/Note'
+import { Note, NoteUnion, RenoteUnion } from '@/types/Note'
 import { MotiView, useAnimationState } from 'moti'
 import { opacify } from 'polished'
 import { apiGet } from '@/scripts/api'
+import { addReactionToNote } from '@/models/note/fetch'
 
 type AppearNoteProps = {
-  appearNote: NoteUnion | RenoteUnion
+  appearNote: Note
   setIsOpenBottomSheet: React.Dispatch<React.SetStateAction<boolean>>
 }
 
@@ -248,20 +249,18 @@ const MkReaction = (props: MkReactionProps) => {
     return reactions.map(() => new Animated.Value(1))
   }, [reactions])
 
-  const handleTouchEmoji = useCallback(
-    (reaction: string) => {
-      apiGet('notes/reactions/create', { noteId, reaction }).catch(err => {
-        console.log(err)
-      })
-    },
-    [reactions]
-  )
-
   const handleTap = async (event: GestureEvent<TapGestureHandlerEventPayload>, index: number, emoji: string) => {
     const { nativeEvent } = event
 
     switch (nativeEvent.state) {
       case State.BEGAN:
+        Animated.timing(animatedScales[index], {
+          toValue: 0.95,
+          useNativeDriver: true,
+          duration: 300,
+          easing: Easing.elastic(2)
+        }).start()
+        break
       case State.ACTIVE:
         Animated.timing(animatedScales[index], {
           toValue: 0.95,
@@ -269,7 +268,8 @@ const MkReaction = (props: MkReactionProps) => {
           duration: 300,
           easing: Easing.elastic(2)
         }).start()
-        handleTouchEmoji(emoji)
+        await addReactionToNote(noteId, emoji)
+
         break
       case State.END:
         Animated.timing(animatedScales[index], {
@@ -278,7 +278,7 @@ const MkReaction = (props: MkReactionProps) => {
           duration: 300,
           easing: Easing.elastic(2)
         }).start()
-        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
+
         break
 
       default:
@@ -326,7 +326,7 @@ const MkReaction = (props: MkReactionProps) => {
                     mx="2px"
                     px={2}
                     py={1}
-                    bg={'transparent'}
+                    bg={item.isContainsMe ? 'accent.300' : 'transparent'}
                     borderColor={'white.0'}
                     borderWidth={1}
                     borderRadius={100}

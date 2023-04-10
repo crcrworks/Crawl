@@ -3,8 +3,8 @@ import { NativeBaseProvider } from 'native-base'
 import { NavigationContainer } from '@react-navigation/native'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 
-import theme from '@/theme'
-import ServicesConteiner from '@/core/services/services-container'
+import theme from '@/core/theme'
+import ServicesConteiner from '@/models/note/services-container'
 
 type AppContainerProps = {
   children: React.ReactNode

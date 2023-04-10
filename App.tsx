@@ -1,9 +1,11 @@
 import React, { useEffect } from 'react'
 import AppContainer from './src/components/app-container'
-import Navigator from './src/'
+import Navigator from './src/app'
 import { LogBox } from 'react-native'
+import { Provider } from 'react-redux'
 
-import { init } from '@/init'
+import { init } from '@/core/init'
+import store from '@/redux/store'
 
 const App = () => {
   useEffect(() => {
@@ -12,7 +14,9 @@ const App = () => {
   LogBox.ignoreLogs(['Sending'])
   return (
     <AppContainer>
-      <Navigator />
+      <Provider store={store}>
+        <Navigator />
+      </Provider>
     </AppContainer>
   )
 }

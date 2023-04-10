@@ -3,10 +3,10 @@ import { View } from 'native-base'
 import { createDrawerNavigator } from '@react-navigation/drawer'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
-import Sidebar from './components/sidebar'
-import MainScreen from './screens/main'
-import SettingScreen from './screens/setting'
-import SidebarIcon from './components/sidebar-icon'
+import Sidebar from '../components/sidebar'
+import MainScreen from '../screens/main'
+import SettingScreen from '../screens/setting'
+import SidebarIcon from '../components/sidebar-icon'
 
 const Drawer = createDrawerNavigator()
 

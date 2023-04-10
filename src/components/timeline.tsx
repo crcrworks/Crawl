@@ -11,15 +11,15 @@ import { useAtom } from 'jotai'
 
 import AppearNote from './timeline/note'
 import ReactionScreen from '@/components/timeline/reaction'
-import { toReactNode } from '@/core/services/MfmParse'
+import { toReactNode } from '@/services/MfmParse'
 
 import { apiGet } from '@/scripts/api'
-import { ConvertEmoji } from '@/core/services/EmojiParse'
-import { stream } from '@/connection'
-import { channel } from '@/connection'
-import { Note, NoteUnion, RenoteUnion } from 'types/Note'
+import { ConvertEmoji } from '@/services/EmojiParse'
+import { stream } from '@/core/connection'
+import { channel } from '@/core/connection'
+import { Note, NoteUnion, RenoteUnion } from '@/types/Note'
 import { timelineAtom } from '@/atoms'
-import { sendUpdateRequest } from '@/core/services/notes/update'
+import { sendUpdateRequest } from '@/models/note/update'
 
 const Timeline = () => {
   const [notes, setNotes] = useAtom(timelineAtom.note)
