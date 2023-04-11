@@ -13,38 +13,25 @@ import AppearNote from './timeline/note'
 import ReactionScreen from '@/components/timeline/reaction'
 
 import { apiGet } from '@/scripts/api'
-import parseEmojiCodeToEmoji from '@/models/parser/emojiCode-to-emoji'
+import parseEmojiCodeToEmoji from '@/models/entities/emojiCode-to-emoji'
 import { stream } from '@/core/connection'
 import { channel } from '@/core/connection'
 import { Note, NoteUnion, RenoteUnion } from '@/types/Note'
 import { timelineAtom } from '@/atoms'
 // import { sendUpdateRequest } from '@/models/note/update'
 import { useDispatch, useSelector } from 'react-redux'
-import { addNote } from '@/redux/reducer/timeline'
+import { addNote, toggleAutoFetch } from '@/redux/reducer/timeline'
 import { RootState, RootDispatch } from '@/redux/store'
-import parseToAppNote from '@/models/parser/misskeyType-to-appType'
+import NoteParser from '@/models/entities/note-parser'
 const SHOULD_GET_NOTE_AMOUNT = 10
 
 const Timeline = () => {
   const dispatch = useDispatch()
   const { notes } = useSelector((state: RootState) => state.timeline)
 
-  const [shouldGetNote, setShouldGetNote] = useState(true)
   const [isLoading, setIsLoading] = useState(false)
   const [isEndReached, setIsEndReached] = useState(false)
   const [isOpenBottomSheet, setIsOpenBottomSheet] = useState(false)
-
-  useEffect(() => {
-    channel.on('note', note => {
-      const parsedNote = parseToAppNote(note)
-      if (!parsedNote) return
-      if (shouldGetNote) dispatch(addNote(parsedNote))
-    })
-
-    return () => {
-      channel.off('note')
-    }
-  }, [shouldGetNote])
 
   // useEffect(() => {
   //   setNotes([])
@@ -87,6 +74,34 @@ const Timeline = () => {
   //   handleEndReached(true)
   // }
 
+  const handleScroll = (event: any) => {
+    const { contentOffset } = event.nativeEvent
+    dispatch(toggleAutoFetch(contentOffset.y < 20))
+  }
+
+  const onViewableItemsChanged = useCallback(({ viewableItems, changed }: { viewableItems: ViewToken[]; changed: ViewToken[] }) => {
+    changed.map(item => {
+      const note: Note = item.item
+      if (item.isViewable) {
+        stream.send('subNote', { id: note.id })
+      } else {
+        stream.send('unsubNote', { id: note.id })
+      }
+    })
+    // changed.map(item => {
+    //   const data: Note = item.item
+    //   const type = item.isViewable ? 'subNote' : 'unsubNote'
+    //   if (!alreadySent.current?.includes(data.note.id)) {
+    //     sendUpdateRequest(type, data.note.id)
+    //   }
+    //   if (item.isViewable) alreadySent.current?.push(data.note.id)
+    //   else
+    //     alreadySent.current?.filter(id => {
+    //       id !== data.note.id
+    //     })
+    // })
+  }, [])
+
   const ListHeader = useCallback(() => {
     return (
       <View mt="70px">
@@ -110,28 +125,6 @@ const Timeline = () => {
       </View>
     )
   }, [isLoading])
-
-  const handleScroll = (event: any) => {
-    const { contentOffset } = event.nativeEvent
-
-    setShouldGetNote(contentOffset.y < 20)
-  }
-
-  const alreadySent = useRef<string[]>(null)
-  const onViewableItemsChanged = useCallback(({ viewableItems, changed }: { viewableItems: ViewToken[]; changed: ViewToken[] }) => {
-    // changed.map(item => {
-    //   const data: Note = item.item
-    //   const type = item.isViewable ? 'subNote' : 'unsubNote'
-    //   if (!alreadySent.current?.includes(data.note.id)) {
-    //     sendUpdateRequest(type, data.note.id)
-    //   }
-    //   if (item.isViewable) alreadySent.current?.push(data.note.id)
-    //   else
-    //     alreadySent.current?.filter(id => {
-    //       id !== data.note.id
-    //     })
-    // })
-  }, [])
 
   const renderItem = useCallback(({ item }: { item: Note }) => {
     const note = item

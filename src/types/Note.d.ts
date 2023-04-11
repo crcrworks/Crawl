@@ -19,7 +19,7 @@ type NoteBase = {
   visibleUserIds?: User['id'][]
   localOnly?: boolean
   myReaction?: string
-  reactions: Reactions
+  reactions: Reaction[]
   renoteCount: number
   repliesCount: number
   poll?: {
@@ -40,12 +40,12 @@ type NoteBase = {
   isHidden?: boolean
 }
 
-type Reactions = {
+export type Reaction = {
   id: string
   emoji: string
   count: number
   isContainsMe: boolean
-}[]
+}
 
 interface NoteUnion extends NoteBase {
   type: 'note'

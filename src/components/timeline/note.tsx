@@ -11,10 +11,9 @@ import Time from '../time'
 import shortid from 'shortid'
 import { Note, NoteUnion, RenoteUnion } from '@/types/Note'
 import { MotiView, useAnimationState } from 'moti'
-import { opacify } from 'polished'
 import { apiGet } from '@/scripts/api'
-import parseToReactNode from '@/models/parser/mfmNode-to-reactNode'
-// import { addReactionToNote } from '@/models/note/fetch'
+import parseToReactNode from '@/models/entities/mfmNode-to-reactNode'
+import { sendReaction } from '@/models/api/timeline/fetch'
 
 type AppearNoteProps = {
   appearNote: Note
@@ -277,7 +276,7 @@ const MkReaction = (props: MkReactionProps) => {
           duration: 300,
           easing: Easing.elastic(2)
         }).start()
-        // await addReactionToNote(noteId, emoji)
+        await sendReaction(noteId, emoji)
 
         break
       case State.END:

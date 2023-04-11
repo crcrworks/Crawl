@@ -6,7 +6,7 @@ import * as mfm from 'mfm-js'
 
 import shortid from 'shortid'
 
-import parseEmojiCodeToEmoji from '@/models/parser/emojiCode-to-emoji'
+import parseEmojiCodeToEmoji from '@/models/entities/emojiCode-to-emoji'
 import { ReactNode } from 'react'
 
 const GlobalScreen = () => {
