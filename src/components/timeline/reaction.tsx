@@ -25,7 +25,7 @@ const ReactionScreen = (props: ReactionScreenProps) => {
   const snapPoints = ['50%', '80%']
 
   return (
-    <View flex={1} position="absolute" w="100%" h="100%" zIndex={1000}>
+    <View flex={1} position="absolute" w="100%" h="100%" zIndex={100}>
       <BottomSheet ref={sheetRef} snapPoints={snapPoints} enablePanDownToClose={true} onClose={() => setIsOpenBottomSheet(false)}>
         <BottomSheetView>
           <Text>hello</Text>

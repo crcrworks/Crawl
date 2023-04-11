@@ -1,7 +1,7 @@
 import * as misskey from 'misskey-js'
 import { Endpoints } from 'misskey-js/built/api.types'
 
-import { url } from '@/config'
+import { url } from '@/core/config'
 import { TOKEN } from '@/../env'
 
 const client = new misskey.api.APIClient({

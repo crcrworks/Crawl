@@ -1,9 +1,10 @@
 import * as misskey from 'misskey-js'
 
-import { $i } from '@/account'
-import { url } from '@/config'
+import { TOKEN, $i } from '@/core/account'
+import { url } from '@/core/config'
+import { apiGet } from '../scripts/api'
 
-export const stream = new misskey.Stream(url, $i ? { token: $i.token } : null)
+export const stream = new misskey.Stream(url, TOKEN ? { token: TOKEN } : null)
 
 stream.on('_connected_', () => {
   console.log(`connected: ${url}`)

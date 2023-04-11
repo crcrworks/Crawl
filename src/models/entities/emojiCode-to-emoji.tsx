@@ -1,8 +1,11 @@
 import React, { ReactNode } from 'react'
-import { Text, Image, ImageSourcePropType, View } from 'react-native'
+import { Text, Image, View } from 'react-native'
 import reactStringReplace from 'react-string-replace'
+import * as mfm from 'mfm-js'
 
-export const ConvertEmoji = (node: ReactNode): ReactNode => {
+import { unique } from '@/misc/prelude/array'
+
+const parseEmojiCodeToEmoji = (node: ReactNode): ReactNode => {
   const replacedJSXElement = replaceTextWithImage(node)
   return <View>{replacedJSXElement}</View>
 }
@@ -34,3 +37,13 @@ const replaceTextWithImage = (element: ReactNode): ReactNode => {
 
   return React.cloneElement(element, {}, ...replacedChildren)
 }
+
+export const extractCustomEmojisFromMfm = (nodes: mfm.MfmNode[]): string[] => {
+  const emojiNodes = mfm.extract(nodes, node => {
+    return node.type === 'emojiCode' && node.props.name.length <= 100
+  }) as mfm.MfmEmojiCode[]
+
+  return unique(emojiNodes.map(x => x.props.name))
+}
+
+export default parseEmojiCodeToEmoji

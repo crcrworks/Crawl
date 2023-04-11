@@ -1,21 +1,17 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 import { Linking } from 'react-native'
 import { Text, useColorModeValue } from 'native-base'
 import * as mfm from 'mfm-js'
 import { View } from 'native-base'
 import shortid from 'shortid'
 
-export const toReactNode = (inputText: string) => {
+const parseToReactNode = (inputText: string): ReactNode[] => {
   return mfm.parse(inputText).map((node: mfm.MfmNode) => {
     return MfmNode({ node })
   })
 }
 
-type MfmNodeProps = {
-  node: mfm.MfmNode
-}
-
-export const MfmNode = (props: MfmNodeProps) => {
+const MfmNode = (props: { node: mfm.MfmNode }) => {
   const { node } = props
   if (!node) return null
 
@@ -147,3 +143,5 @@ export const MfmNode = (props: MfmNodeProps) => {
       return <View key={shortid.generate()} />
   }
 }
+
+export default parseToReactNode

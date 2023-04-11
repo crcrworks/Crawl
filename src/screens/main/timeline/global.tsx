@@ -3,10 +3,10 @@ import { Center, Box, Text, useColorModeValue, Image, View } from 'native-base'
 import Lottie from 'lottie-react-native'
 import { Animated, Easing } from 'react-native'
 import * as mfm from 'mfm-js'
-import { toReactNode } from '@/core/services/MfmParse'
+
 import shortid from 'shortid'
 
-import { ConvertEmoji } from '@/core/services/EmojiParse'
+import parseEmojiCodeToEmoji from '@/models/entities/emojiCode-to-emoji'
 import { ReactNode } from 'react'
 
 const GlobalScreen = () => {
@@ -21,7 +21,7 @@ const GlobalScreen = () => {
   }, [])
 
   const node: ReactNode = <Text>Twitter:igyo:</Text>
-  const emoji = ConvertEmoji(node)
+  const emoji = parseEmojiCodeToEmoji(node)
 
   return (
     <Center safeArea _dark={{ bg: 'black.300' }} _light={{ bg: 'white.300' }} flex={1}>
