@@ -76,8 +76,7 @@ const Timeline = () => {
 
   const handleScroll = (event: any) => {
     const { contentOffset } = event.nativeEvent
-    // dispatch(toggleAutoFetch(contentOffset.y < 20))
-    dispatch(toggleAutoFetch(false))
+    dispatch(toggleAutoFetch(contentOffset.y < 20))
   }
 
   const onViewableItemsChanged = useCallback(({ viewableItems, changed }: { viewableItems: ViewToken[]; changed: ViewToken[] }) => {
