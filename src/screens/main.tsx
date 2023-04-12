@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, createContext } from 'react'
 import { Text, Box, Center, Icon, View, VStack, useColorModeValue, Overlay, useTheme } from 'native-base'
 import { Defs, RadialGradient, Svg, Stop, Rect } from 'react-native-svg'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { Feather, Ionicons, Entypo, FontAwesome } from '@expo/vector-icons'
+import { Feather, Ionicons, Entypo, FontAwesome, AntDesign } from '@expo/vector-icons'
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs'
 import { createMaterialTopTabNavigator, MaterialTopTabBar, MaterialTopTabBarProps } from '@react-navigation/material-top-tabs'
 import shortid from 'shortid'
@@ -24,27 +24,27 @@ export type TopTabState = {
 
 const Main = () => {
   return (
-    <View flex={1} backgroundColor={useColorModeValue('white.300', 'black.300')}>
+    <View flex={1} backgroundColor={useColorModeValue('white.300', 'black.900')}>
       <NavigationBottomContainer initialRouteName="Home">
         <tab.Screen
           name="Notification"
           component={NotificationScreen}
           options={{
-            tabBarIcon: ({ color }) => <Icon as={Ionicons} name="notifications" color={color}></Icon>
+            tabBarIcon: ({ color }) => <Icon as={Ionicons} name="notifications-outline" color={color} size={5}></Icon>
           }}
         />
         <tab.Screen
           name="Home"
           component={HomeScreen}
           options={{
-            tabBarIcon: ({ color }) => <Icon as={Entypo} name="home" color={color}></Icon>
+            tabBarIcon: ({ color }) => <Icon as={Feather} name="home" color={color} size={5}></Icon>
           }}
         />
         <tab.Screen
           name="Search"
           component={SearchScreen}
           options={{
-            tabBarIcon: ({ color }) => <Icon as={FontAwesome} name="search" color={color}></Icon>
+            tabBarIcon: ({ color }) => <Icon as={AntDesign} name="search1" color={color} size={5}></Icon>
           }}
         />
       </NavigationBottomContainer>

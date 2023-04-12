@@ -76,7 +76,8 @@ const Timeline = () => {
 
   const handleScroll = (event: any) => {
     const { contentOffset } = event.nativeEvent
-    dispatch(toggleAutoFetch(contentOffset.y < 20))
+    // dispatch(toggleAutoFetch(contentOffset.y < 20))
+    dispatch(toggleAutoFetch(false))
   }
 
   const onViewableItemsChanged = useCallback(({ viewableItems, changed }: { viewableItems: ViewToken[]; changed: ViewToken[] }) => {
@@ -104,26 +105,18 @@ const Timeline = () => {
 
   const ListHeader = useCallback(() => {
     return (
-      <View mt="70px">
-        <SafeAreaView edges={['top']}>
-          <Center>
-            {/* <Text my={5} color={'white.0'} top={0}>
+      <View mt="10px">
+        <Center>
+          {/* <Text my={5} color={'white.0'} top={0}>
               上へスクロールして全てリロード
             </Text> */}
-          </Center>
-        </SafeAreaView>
+        </Center>
       </View>
     )
   }, [])
 
   const ListFooter = useCallback(() => {
-    return (
-      <View mb="20px">
-        <SafeAreaView edges={['bottom']}>
-          <Center h="50px">{isLoading && <Spinner color="white.100" />}</Center>
-        </SafeAreaView>
-      </View>
-    )
+    return <View mb="10px"></View>
   }, [isLoading])
 
   const renderItem = useCallback(({ item }: { item: Note }) => {
@@ -165,6 +158,7 @@ const Timeline = () => {
         viewabilityConfig={{
           itemVisiblePercentThreshold: 50
         }}
+        showsVerticalScrollIndicator={false}
       />
     </View>
   )

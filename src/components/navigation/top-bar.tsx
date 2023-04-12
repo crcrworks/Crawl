@@ -73,30 +73,34 @@ export const NavigationTopContainer = (props: NavigationTopContainerProps) => {
         }
       }}
       tabBar={tabBarProps => {
-        return (
-          <View position="absolute" w={'100%'} zIndex={100}>
-            <SafeAreaView style={{ flex: 1 }}>
-              <View flexDirection={'row'} style={{ top: 10, height: 35 }}>
-                <View w={20}>
-                  <SidebarIcon />
-                </View>
-                <View
-                  flex={1}
-                  borderColor={color.border}
-                  borderTopWidth={1}
-                  borderRightWidth={0}
-                  borderBottomWidth={1}
-                  borderLeftWidth={1}
-                  borderLeftRadius={100}
-                  borderRightRadius={0}
-                  bg="#00000083"
-                >
-                  <MaterialTopTabBar {...tabBarProps} />
-                </View>
-              </View>
-            </SafeAreaView>
-          </View>
-        )
+        return null
+        // <SafeAreaView edges={['top']}>
+        //   <View h="50px">
+        //     <MaterialTopTabBar {...tabBarProps} />
+        //   </View>
+        // </SafeAreaView>
+        // <View position="absolute" w={'100%'} zIndex={100}>
+        //   <SafeAreaView style={{ flex: 1 }}>
+        //     <View flexDirection={'row'} style={{ top: 10, height: 35 }}>
+        //       <View w={20}>
+        //         <SidebarIcon />
+        //       </View>
+        //       <View
+        //         flex={1}
+        //         borderColor={color.border}
+        //         borderTopWidth={1}
+        //         borderRightWidth={0}
+        //         borderBottomWidth={1}
+        //         borderLeftWidth={1}
+        //         borderLeftRadius={100}
+        //         borderRightRadius={0}
+        //         bg="#00000083"
+        //       >
+        //         <MaterialTopTabBar {...tabBarProps} />
+        //       </View>
+        //     </View>
+        //   </SafeAreaView>
+        // </View>
       }}
     >
       {children}

@@ -7,7 +7,7 @@ import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from '
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Defs, RadialGradient, Svg, Stop, Rect } from 'react-native-svg'
 import { TabBar } from 'react-native-tab-view'
-import { rgba } from 'polished'
+import { rgba, size } from 'polished'
 
 import CreateNoteIcon from '@/components/create-note-button'
 
@@ -46,8 +46,7 @@ const NavigationBottomContainer = (props: NavigationBottomContainerProps) => {
 
         tabBarIconStyle: {
           alignItems: 'center',
-          justifyContent: 'center',
-          bottom: 8
+          justifyContent: 'center'
         },
         tabBarActiveTintColor: color.active,
         tabBarInactiveTintColor: color.inactive,
@@ -74,51 +73,61 @@ const NavigationBottomContainer = (props: NavigationBottomContainerProps) => {
             })
           }, [indicatorProps])
 
-          return (
-            <Animated.View
-              style={[
-                {
-                  bottom: 1,
-                  width: width / length / 2,
-                  height: 1,
+          return null
+          // <Animated.View
+          //   style={[
+          //     {
+          //       bottom: 1,
+          //       width: width / length / 2,
+          //       height: 1,
 
-                  backgroundColor: color.indicator,
-                  borderRadius: 100
-                },
-                animatedStyles
-              ]}
-            />
-          )
+          //       backgroundColor: color.indicator,
+          //       borderRadius: 100
+          //     },
+          //     animatedStyles
+          //   ]}
+          // />
         }
       }}
       tabBar={tabBarProps => {
         return (
-          <View position="absolute" bottom={0} w={'100%'} zIndex={400}>
-            <LinearGradient colors={[rgba(color.background, 0), rgba(color.background, 1)]} start={{ x: 0.5, y: 0.2 }} end={{ x: 0.5, y: 0.5 }}>
-              <SafeAreaView edges={['bottom']} style={{ flex: 1 }}>
-                <View h="70px" justifyContent="flex-end" mb={Platform.OS === 'ios' ? 0 : 3}>
-                  <View flexDirection={'row'}>
-                    <View
-                      flex={1}
-                      h="35px"
-                      borderLeftRadius={0}
-                      borderRightRadius={100}
-                      borderColor={color.border}
-                      borderTopWidth={1}
-                      borderRightWidth={1}
-                      borderBottomWidth={1}
-                      bg="#00000083"
-                    >
-                      <MaterialTopTabBar {...tabBarProps} />
-                    </View>
-                    <View w="110px">
-                      <CreateNoteIcon />
-                    </View>
-                  </View>
-                </View>
-              </SafeAreaView>
-            </LinearGradient>
-          </View>
+          <SafeAreaView edges={['bottom']}>
+            <View flexDirection="row" w="100%" h="40px">
+              <View flex={1}>
+                <MaterialTopTabBar {...tabBarProps} />
+              </View>
+              <View mt={2} ml={5} mr={5}>
+                <CreateNoteIcon />
+              </View>
+            </View>
+          </SafeAreaView>
+
+          // <View position="absolute" bottom={0} w={'100%'} zIndex={400}>
+          //   <LinearGradient colors={[rgba(color.background, 0), rgba(color.background, 1)]} start={{ x: 0.5, y: 0.2 }} end={{ x: 0.5, y: 0.5 }}>
+          //     <SafeAreaView edges={['bottom']} style={{ flex: 1 }}>
+          //       <View h="70px" justifyContent="flex-end" mb={Platform.OS === 'ios' ? 0 : 3}>
+          //         <View flexDirection={'row'}>
+          //           <View
+          //             flex={1}
+          //             h="35px"
+          //             borderLeftRadius={0}
+          //             borderRightRadius={100}
+          //             borderColor={color.border}
+          //             borderTopWidth={1}
+          //             borderRightWidth={1}
+          //             borderBottomWidth={1}
+          //             bg="#00000083"
+          //           >
+          //             <MaterialTopTabBar {...tabBarProps} />
+          //           </View>
+          //           <View w="110px">
+          //             <CreateNoteIcon />
+          //           </View>
+          //         </View>
+          //       </View>
+          //     </SafeAreaView>
+          //   </LinearGradient>
+          // </View>
         )
       }}
     >
