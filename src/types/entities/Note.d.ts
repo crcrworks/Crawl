@@ -47,11 +47,11 @@ export type Reaction = {
   isContainsMe: boolean
 }
 
-interface NoteUnion extends NoteBase {
-  type: 'note'
-  renote?: Note
-  renoteId?: Note['id']
-}
+  interface NoteUnion extends NoteBase {
+    type: 'note'
+    renote?: Note
+    renoteId?: Note['id']
+  }
 
 interface RenoteUnion extends NoteBase {
   type: 'renote'

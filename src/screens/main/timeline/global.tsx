@@ -20,7 +20,7 @@ const GlobalScreen = () => {
     }).start()
   }, [])
 
-  const node: ReactNode = <Text>Twitter:igyo:</Text>
+  const node: ReactNode = <Text>:misskey:</Text>
   const emoji = parseEmojiCodeToEmoji(node)
 
   return (

@@ -1,12 +1,10 @@
-import { stream, channel } from '@/core/connection'
+import { stream } from '@/core/connection'
 import store from '@/redux/store'
-import shortid from 'shortid'
 import * as Haptics from 'expo-haptics'
+import shortid from 'shortid'
 
-import { addNote, addReaction } from '@/redux/reducer/timeline'
-import NoteParser from '../../entities/note-parser'
-import { Note, NoteUpdatedEvent } from '@/types/Note'
 import { $i } from '@/core/account'
+import { addReaction } from '@/redux/reducer/timeline'
 
 stream.on('noteUpdated', data => {
   switch (data.type) {

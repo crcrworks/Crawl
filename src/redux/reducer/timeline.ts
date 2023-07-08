@@ -1,7 +1,6 @@
-import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 
-import { Note, Reaction } from '@/types/Note'
-import { channel } from '@/core/connection'
+import { Note, Reaction } from '@/types/entities/Note'
 
 // export const fetchNotes = createAsyncThunk('notes/fetchNotes', async () => {
 //   const response = await fetch('https://misskey.io/notes')
@@ -9,20 +8,31 @@ import { channel } from '@/core/connection'
 //   return notes
 // })
 
-const initialState: { notes: Note[]; isAutoFetch: boolean } = { notes: [], isAutoFetch: true }
+const initialState: { notes: Note[]; isAutoFetch: boolean; isLoading: boolean } = { notes: [], isAutoFetch: true, isLoading: false }
 
 const timelineSlice = createSlice({
   name: 'timeline',
   initialState: initialState,
   reducers: {
-    addNote: (state, action: PayloadAction<Note>) => {
-      state.notes.unshift(action.payload)
+    addNote: (state, action: PayloadAction<Note[]>) => {
+      action.payload.map(note => {
+        if (state.notes.findIndex(item => item.id === note.id) === -1) {
+          state.notes.unshift(note)
+        }
+      })
+
       if (state.notes.length > 20) {
         state.notes.splice(20, state.notes.length - 20)
       }
     },
+    clearNotes: state => {
+      state.notes = []
+    },
     toggleAutoFetch: (state, action: PayloadAction<boolean>) => {
       state.isAutoFetch = action.payload
+    },
+    toggleIsLoading: (state, action: PayloadAction<boolean>) => {
+      state.isLoading = action.payload
     },
     addReaction: (state, action: PayloadAction<{ reaction: Omit<Reaction, 'count'>; noteId: string }>) => {
       const noteIndex = state.notes.findIndex(item => item.id === action.payload.noteId)
@@ -48,5 +58,5 @@ const timelineSlice = createSlice({
     //   .addCase(fetchNotes.rejected, state => {})
   }
 })
-export const { addNote, toggleAutoFetch, addReaction, removeReaction } = timelineSlice.actions
+export const { addNote, toggleAutoFetch, addReaction, removeReaction, toggleIsLoading, clearNotes } = timelineSlice.actions
 export default timelineSlice.reducer

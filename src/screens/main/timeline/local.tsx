@@ -4,11 +4,12 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 
 import Timeline from '@/components/timeline'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { ProfileScreenNavigationProp } from '@/types/ProfileNavigation'
 
-const LocalScreen = () => {
+const LocalScreen = ({ navigation }: { navigation: ProfileScreenNavigationProp }) => {
   return (
     <View flex={1} _dark={{ bg: 'black.300' }} _light={{ bg: 'white.300' }}>
-      <Timeline />
+      <Timeline navigation={navigation} />
     </View>
   )
 }

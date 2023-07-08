@@ -16,14 +16,12 @@ const replaceTextWithImage = (element: ReactNode): ReactNode => {
     return element
   }
 
-  console.log('replacing', element)
 
   const { children } = element.props
   if (typeof children === 'string') {
     // childrenが文字列の場合、正規表現でテキストを検索してImageタグに置換する
     const regex = /:([^:\s]*(?:::[^:\s]*)*?):/
 
-    console.log(children)
 
     const replacedChildren = reactStringReplace(children, regex, (match, i) => {
       console.log(match)
@@ -35,6 +33,7 @@ const replaceTextWithImage = (element: ReactNode): ReactNode => {
 
   const replacedChildren = React.Children.map(children, child => replaceTextWithImage(child))
 
+  if (!element || !replacedChildren) return null
   return React.cloneElement(element, {}, ...replacedChildren)
 }
 

@@ -1,7 +1,7 @@
 import * as misskey from 'misskey-js'
 import shortid from 'shortid'
 
-import { Note } from '@/types/Note'
+import { Note } from '@/types/entities/Note'
 
 export default class NoteParser {
   private readonly appearNote: misskey.entities.Note

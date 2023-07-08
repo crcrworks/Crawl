@@ -15,6 +15,8 @@ type NavigationTopContainerProps = {
   children: React.ReactNode
 }
 
+//TODO top barの見た目を自作する
+
 export const NavigationTopContainer = (props: NavigationTopContainerProps) => {
   const { children } = props
 
