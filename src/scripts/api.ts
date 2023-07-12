@@ -11,8 +11,8 @@ const client = new misskey.api.APIClient({
 
 export const apiGet = async <E extends keyof Endpoints, P extends Endpoints[E]['req']>(
   endpoint: E,
-  params?: P,
-  credential?: string | null | undefined
+  params?: P
+  // credential?: string | null | undefined
 ) => {
   return await client.request(endpoint, params).then(data => {
     return data

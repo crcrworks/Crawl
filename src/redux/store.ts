@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit'
 import timelineReducer from './reducer/timeline'
+import emojisReducer from './reducer/emojis'
 
 const store = configureStore({
   reducer: {
-    timeline: timelineReducer
+    timeline: timelineReducer,
+    emojis: emojisReducer
   }
 })
 

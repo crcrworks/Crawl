@@ -1,13 +1,17 @@
 import React from 'react'
 import { TabBar } from 'react-native-tab-view'
-import { createMaterialTopTabNavigator, MaterialTopTabBar, MaterialTopTabBarProps } from '@react-navigation/material-top-tabs'
+import {
+  createMaterialTopTabNavigator,
+  MaterialTopTabBar,
+  MaterialTopTabBarProps
+} from '@react-navigation/material-top-tabs'
 import { Box, themeTools, useColorMode, useTheme, View, useColorModeValue } from 'native-base'
 import { useSharedValue } from 'react-native-reanimated'
 
-import SidebarIcon from '@/components/sidebar-icon'
-import { border } from 'native-base/lib/typescript/theme/styled-system'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import { LinearGradient } from 'expo-linear-gradient'
+// import SidebarIcon from '@/components/sidebar/index'
+// import { border } from 'native-base/lib/typescript/theme/styled-system'
+// import { SafeAreaView } from 'react-native-safe-area-context'
+// import { LinearGradient } from 'expo-linear-gradient'
 
 const tab = createMaterialTopTabNavigator()
 

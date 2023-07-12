@@ -8,7 +8,11 @@ import { Note, Reaction } from '@/types/entities/Note'
 //   return notes
 // })
 
-const initialState: { notes: Note[]; isAutoFetch: boolean; isLoading: boolean } = { notes: [], isAutoFetch: true, isLoading: false }
+const initialState: { notes: Note[]; isAutoFetch: boolean; isLoading: boolean } = {
+  notes: [],
+  isAutoFetch: true,
+  isLoading: false
+}
 
 const timelineSlice = createSlice({
   name: 'timeline',
@@ -21,8 +25,8 @@ const timelineSlice = createSlice({
         }
       })
 
-      if (state.notes.length > 20) {
-        state.notes.splice(20, state.notes.length - 20)
+      if (state.notes.length > 50) {
+        state.notes.splice(50, state.notes.length - 50)
       }
     },
     clearNotes: state => {
@@ -34,11 +38,16 @@ const timelineSlice = createSlice({
     toggleIsLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload
     },
-    addReaction: (state, action: PayloadAction<{ reaction: Omit<Reaction, 'count'>; noteId: string }>) => {
+    addReaction: (
+      state,
+      action: PayloadAction<{ reaction: Omit<Reaction, 'count'>; noteId: string }>
+    ) => {
       const noteIndex = state.notes.findIndex(item => item.id === action.payload.noteId)
       const targetNote = state.notes[noteIndex]
       if (noteIndex === -1) return
-      const reactionIndex = state.notes[noteIndex].reactions.findIndex(item => item.emoji === action.payload.reaction.emoji)
+      const reactionIndex = state.notes[noteIndex].reactions.findIndex(
+        item => item.code === action.payload.reaction.code
+      )
       const targetReaction = state.notes[noteIndex].reactions[reactionIndex]
 
       if (reactionIndex !== -1) {
@@ -49,7 +58,7 @@ const timelineSlice = createSlice({
         state.notes[noteIndex].reactions.push({ ...action.payload.reaction, count: 1 })
       }
     },
-    removeReaction: (state, action: PayloadAction<{ noteId: string }>) => {}
+    removeReaction: (state, action: PayloadAction<{ noteId: string }>) => { }
   },
   extraReducers: builder => {
     // builder
@@ -58,5 +67,12 @@ const timelineSlice = createSlice({
     //   .addCase(fetchNotes.rejected, state => {})
   }
 })
-export const { addNote, toggleAutoFetch, addReaction, removeReaction, toggleIsLoading, clearNotes } = timelineSlice.actions
+export const {
+  addNote,
+  toggleAutoFetch,
+  addReaction,
+  removeReaction,
+  toggleIsLoading,
+  clearNotes
+} = timelineSlice.actions
 export default timelineSlice.reducer

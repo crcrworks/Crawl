@@ -1,31 +1,10 @@
-import React from 'react'
-import { View } from 'native-base'
-import { createDrawerNavigator } from '@react-navigation/drawer'
-import { SafeAreaView } from 'react-native-safe-area-context'
-
-import Sidebar from './sidebar'
-import MainScreen from '../screens/main'
-import SettingScreen from '../screens/setting'
-import SidebarIcon from './sidebar-icon'
-
-const Drawer = createDrawerNavigator()
+import { View, Text } from 'native-base'
+import Pages from '@/components/pages/index'
 
 const App = () => {
   return (
     <View flex={1} borderRadius={100}>
-      <Drawer.Navigator
-        initialRouteName="Main"
-        drawerContent={props => <Sidebar {...props} />}
-        screenOptions={{
-          headerShown: false,
-          swipeEnabled: false,
-          drawerType: 'back',
-          overlayColor: '#00000000'
-        }}
-      >
-        <Drawer.Screen name="Main" component={MainScreen} />
-        <Drawer.Screen name="Setting" component={SettingScreen} />
-      </Drawer.Navigator>
+      <Pages />
     </View>
   )
 }

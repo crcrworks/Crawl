@@ -1,9 +1,17 @@
 import { useEffect } from 'react'
-import { View, Center, useTheme, themeTools, useColorModeValue, useColorMode } from 'native-base'
+import { View, useTheme, themeTools, useColorModeValue, useColorMode } from 'native-base'
 import { Platform } from 'react-native'
-import { createMaterialTopTabNavigator, MaterialTopTabBar } from '@react-navigation/material-top-tabs'
+import {
+  createMaterialTopTabNavigator,
+  MaterialTopTabBar
+} from '@react-navigation/material-top-tabs'
 import { LinearGradient } from 'expo-linear-gradient'
-import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming
+} from 'react-native-reanimated'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Defs, RadialGradient, Svg, Stop, Rect } from 'react-native-svg'
 import { TabBar } from 'react-native-tab-view'
@@ -101,7 +109,7 @@ const NavigationBottomContainer = (props: NavigationBottomContainerProps) => {
               </View>
             </View>
           </SafeAreaView>
-
+          /* eslint-disable */
           // <View position="absolute" bottom={0} w={'100%'} zIndex={400}>
           //   <LinearGradient colors={[rgba(color.background, 0), rgba(color.background, 1)]} start={{ x: 0.5, y: 0.2 }} end={{ x: 0.5, y: 0.5 }}>
           //     <SafeAreaView edges={['bottom']} style={{ flex: 1 }}>
@@ -128,6 +136,7 @@ const NavigationBottomContainer = (props: NavigationBottomContainerProps) => {
           //     </SafeAreaView>
           //   </LinearGradient>
           // </View>
+          /* eslint-enable */
         )
       }}
     >

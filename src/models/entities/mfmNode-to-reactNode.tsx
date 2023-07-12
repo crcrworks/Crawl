@@ -1,14 +1,16 @@
-import React, { ReactNode } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 import { Linking } from 'react-native'
-import { Text, useColorModeValue } from 'native-base'
+import { Text, useColorModeValue, Image } from 'native-base'
 import * as mfm from 'mfm-js'
 import { View } from 'native-base'
 import shortid from 'shortid'
 
 const parseToReactNode = (inputText: string): ReactNode[] => {
-  return mfm.parse(inputText).map((node: mfm.MfmNode) => {
+  const parsedReactNode = mfm.parse(inputText).map((node: mfm.MfmNode) => {
     return MfmNode({ node })
   })
+
+  return parsedReactNode
 }
 
 const MfmNode = (props: { node: mfm.MfmNode }) => {
@@ -67,7 +69,17 @@ const MfmNode = (props: { node: mfm.MfmNode }) => {
         </Text>
       )
     case 'emojiCode':
-      return <Text key={shortid.generate()} color={'yellow.300'}>{`:${node.props.name}:`}</Text>
+      return (
+        <Text key={shortid.generate()} color={'yellow.300'}>
+          <Image
+            source={{
+              uri: 'https://s3.arkjp.net/misskey/0c74af91-d35b-496d-84b0-7e8a9ab14b7b.gif'
+            }}
+            alt={node.props.name}
+            style={{ width: 10, height: 10 }}
+          ></Image>
+        </Text>
+      )
     case 'unicodeEmoji':
       return (
         <Text key={shortid.generate()} color={'yellow.300'}>
@@ -76,7 +88,11 @@ const MfmNode = (props: { node: mfm.MfmNode }) => {
       )
     case 'hashtag':
       return (
-        <Text key={shortid.generate()} color="blue.300" onPress={() => console.log(`Pressed ${node.props.hashtag}`)}>
+        <Text
+          key={shortid.generate()}
+          color="blue.300"
+          onPress={() => console.log(`Pressed ${node.props.hashtag}`)}
+        >
           {`#${node.props.hashtag}`}
         </Text>
       )
@@ -88,7 +104,11 @@ const MfmNode = (props: { node: mfm.MfmNode }) => {
       return <Text key={shortid.generate()} /*fontFamily="mono" */>{node.props.formula}</Text>
     case 'link':
       return (
-        <Text key={shortid.generate()} color="blue.300" onPress={() => console.log(`Pressed ${node.props.url}`)}>
+        <Text
+          key={shortid.generate()}
+          color="blue.300"
+          onPress={() => console.log(`Pressed ${node.props.url}`)}
+        >
           {node.children.map(child => (
             <MfmNode key={shortid.generate()} node={child} />
           ))}
@@ -96,7 +116,11 @@ const MfmNode = (props: { node: mfm.MfmNode }) => {
       )
     case 'mention':
       return (
-        <Text key={shortid.generate()} color="blue.300" onPress={() => console.log(`Pressed ${node.props.acct}`)}>
+        <Text
+          key={shortid.generate()}
+          color="blue.300"
+          onPress={() => console.log(`Pressed ${node.props.acct}`)}
+        >
           {node.props.acct}
         </Text>
       )
@@ -120,13 +144,21 @@ const MfmNode = (props: { node: mfm.MfmNode }) => {
       )
     case 'url':
       return (
-        <Text key={shortid.generate()} color="blue.300" onPress={() => Linking.openURL(node.props.url)}>
+        <Text
+          key={shortid.generate()}
+          color="blue.300"
+          onPress={() => Linking.openURL(node.props.url)}
+        >
           {node.props.url}
         </Text>
       )
     case 'search':
       return (
-        <Text key={shortid.generate()} color="blue.300" onPress={() => Linking.openURL(`https://www.google.com/search?q=${node.props.query}`)}>
+        <Text
+          key={shortid.generate()}
+          color="blue.300"
+          onPress={() => Linking.openURL(`https://www.google.com/search?q=${node.props.query}`)}
+        >
           {node.props.content}
         </Text>
       )

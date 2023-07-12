@@ -1,7 +1,9 @@
 import * as misskey from 'misskey-js'
 import shortid from 'shortid'
+import axios from 'axios'
 
 import { Note } from '@/types/entities/Note'
+import { endEvent } from 'react-native/Libraries/Performance/Systrace'
 
 export default class NoteParser {
   private readonly appearNote: misskey.entities.Note
@@ -15,7 +17,7 @@ export default class NoteParser {
   }
 
   public noteType(): 'note' | 'renote' {
-    if (!this.appearNote.text) return 'renote'
+    if (!this.appearNote.text && this.appearNote.user.username) return 'renote'
     return 'note'
   }
 
@@ -45,12 +47,25 @@ export default class NoteParser {
   }
 
   public parsedReactions(): Note['reactions'] {
-    const reactions = this.noteType() === 'note' ? this.appearNote.reactions : this.appearNote.renote?.reactions
+    const reactions =
+      this.noteType() === 'note' ? this.appearNote.reactions : this.appearNote.renote?.reactions
 
     if (!reactions) return []
+
     const parsedReactions: [string, number][] = Object.entries(reactions)
+
     return parsedReactions.map(reaction => {
-      return { id: shortid.generate(), emoji: reaction[0], count: reaction[1], isContainsMe: false }
+      const reactionCode = reaction[0].match(/:(.*?)(?:@|$)/)?.[1] || ''
+
+      // URLはapi/noteで設定します
+
+      return {
+        id: shortid.generate(),
+        code: reactionCode,
+        count: reaction[1],
+        url: 'https://s3.arkjp.net/emoji/iiyo.png',
+        isContainsMe: false
+      }
     })
   }
 }

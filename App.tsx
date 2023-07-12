@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import AppContainer from './src/components/app-container'
 import Navigator from './src/components'
 import { LogBox } from 'react-native'

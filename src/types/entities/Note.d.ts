@@ -1,6 +1,3 @@
-import * as misskey from 'misskey-js'
-import { ReactNode } from 'react'
-import { SharedValue } from 'react-native-reanimated'
 import { DriveFile } from './DriveFile'
 
 type NoteBase = {
@@ -42,16 +39,17 @@ type NoteBase = {
 
 export type Reaction = {
   id: string
-  emoji: string
+  code: string
+  url: string
   count: number
   isContainsMe: boolean
 }
 
-  interface NoteUnion extends NoteBase {
-    type: 'note'
-    renote?: Note
-    renoteId?: Note['id']
-  }
+interface NoteUnion extends NoteBase {
+  type: 'note'
+  renote?: Note
+  renoteId?: Note['id']
+}
 
 interface RenoteUnion extends NoteBase {
   type: 'renote'
@@ -88,33 +86,33 @@ export type Note = NoteUnion | RenoteUnion
 
 export declare type NoteUpdatedEvent =
   | {
-      id: Note['id']
-      type: 'reacted'
-      body: {
-        reaction: string
-        userId: User['id']
-      }
+    id: Note['id']
+    type: 'reacted'
+    body: {
+      reaction: string
+      userId: User['id']
     }
+  }
   | {
-      id: Note['id']
-      type: 'unreacted'
-      body: {
-        reaction: string
-        userId: User['id']
-      }
+    id: Note['id']
+    type: 'unreacted'
+    body: {
+      reaction: string
+      userId: User['id']
     }
+  }
   | {
-      id: Note['id']
-      type: 'deleted'
-      body: {
-        deletedAt: string
-      }
+    id: Note['id']
+    type: 'deleted'
+    body: {
+      deletedAt: string
     }
+  }
   | {
-      id: Note['id']
-      type: 'pollVoted'
-      body: {
-        choice: number
-        userId: User['id']
-      }
+    id: Note['id']
+    type: 'pollVoted'
+    body: {
+      choice: number
+      userId: User['id']
     }
+  }
